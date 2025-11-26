@@ -1,37 +1,31 @@
 <!-- 游戏页面 - 阶段6版本 -->
-<view class="container">
+<view class="container" style="background: linear-gradient(180deg, {{theme.colors.background}} 0%, {{theme.colors.background}} 100%);">
   <view class="content">
-    <!-- 顶部信息栏 - 新布局 -->
-    <view class="info-bar">
-      <!-- 新游戏按钮 -->
-      <button class="info-new-game-btn" bindtap="onNewGame">
-        <text class="new-game-icon">🔄</text>
-        <text class="new-game-label">新游戏</text>
-      </button>
-      
-      <!-- 难度显示（只读） -->
-      <view class="info-item">
-        <text class="info-label">难度</text>
-        <view class="info-value">{{difficulties[difficultyIndex].label}}</view>
+    <!-- 顶部信息栏 - 3个元素，各占1/3 -->
+    <view class="info-bar" style="background: linear-gradient(135deg, {{theme.colors.primary}}, {{theme.colors.primaryDark}});">
+      <!-- 难度显示（只读，横向布局） -->
+      <view class="info-item difficulty-item">
+        <text class="info-label">难度：</text>
+        <text class="info-value">{{difficulties[difficultyIndex].label}}</text>
       </view>
       
       <!-- 错误计数 -->
       <view class="info-item error-item">
-        <text class="error-icon">❌</text>
+        <text class="info-label">错误：</text>
         <text class="error-count">{{errorCount}}/3</text>
       </view>
       
       <!-- 计时器 -->
       <view class="info-item timer-item">
-        <text class="timer-icon">⏱️</text>
+        <text class="info-label">用时：</text>
         <text class="timer-text">{{currentTime}}</text>
       </view>
     </view>
     
     <!-- 最佳时间 -->
-    <view class="best-time" wx:if="{{bestTime}}">
-      <text class="best-time-label">🏆 最佳:</text>
-      <text class="best-time-value">{{bestTime}}</text>
+    <view class="best-time" wx:if="{{bestTime}}" style="background: {{theme.colors.sameNumber}};">
+      <text class="best-time-label" style="color: {{theme.colors.textMedium}};">🏆 最佳:</text>
+      <text class="best-time-value" style="color: {{theme.colors.textDark}};">{{bestTime}}</text>
     </view>
     
     <!-- 数独棋盘 -->
@@ -39,13 +33,27 @@
       <block wx:for="{{cells}}" wx:key="index">
         <view 
           class="cell {{item.isFixed ? 'fixed' : ''}} {{item.index === selectedIndex ? 'selected' : ''}} {{item.isRelated ? 'related' : ''}} {{item.isSameNumber ? 'same-number' : ''}} {{item.hasError ? 'error' : ''}} {{item.showHint ? 'hint-active' : ''}} {{item.isRightBorder ? 'border-right' : ''}} {{item.isBottomBorder ? 'border-bottom' : ''}}"
+          style="{{item.index === selectedIndex ? 'background-color: ' + theme.colors.selected + ' !important;' : item.isRelated ? 'background-color: ' + theme.colors.related + ';' : item.isSameNumber ? 'background-color: ' + theme.colors.sameNumber + ';' : item.isFixed ? 'background-color: ' + theme.colors.fixed + ';' : ''}}{{item.hasError ? ' background-color: ' + theme.colors.errorBg + ' !important;' : ''}}{{item.showHint ? ' background: linear-gradient(135deg, ' + theme.colors.hint + ', ' + theme.colors.success + ') !important;' : ''}}"
           data-index="{{item.index}}"
           bindtap="onCellTap">
           <!-- 正常数字 (暂停时隐藏) -->
-          <text class="cell-text" wx:if="{{item.value && !item.showHint && !isPaused}}">{{item.value}}</text>
+          <text class="cell-text" wx:if="{{item.value && !item.showHint && !isPaused}}" style="color: {{item.index === selectedIndex ? theme.colors.selectedText : item.isFixed ? theme.colors.textDark : theme.colors.textDark}};">{{item.value}}</text>
           
           <!-- 提示数字（带动画，暂停时隐藏） -->
           <text class="hint-text" wx:if="{{item.showHint && !isPaused}}">{{item.hintValue}}</text>
+          
+          <!-- 笔记模式：候选数字（3×3网格，固定位置） -->
+          <view class="notes-grid" wx:if="{{!item.value && !item.showHint && !isPaused && item.noteFlags}}">
+            <text class="note-cell {{item.noteFlags.n1 ? 'show' : 'hide'}}" style="color: {{theme.colors.note}};">1</text>
+            <text class="note-cell {{item.noteFlags.n2 ? 'show' : 'hide'}}" style="color: {{theme.colors.note}};">2</text>
+            <text class="note-cell {{item.noteFlags.n3 ? 'show' : 'hide'}}" style="color: {{theme.colors.note}};">3</text>
+            <text class="note-cell {{item.noteFlags.n4 ? 'show' : 'hide'}}" style="color: {{theme.colors.note}};">4</text>
+            <text class="note-cell {{item.noteFlags.n5 ? 'show' : 'hide'}}" style="color: {{theme.colors.note}};">5</text>
+            <text class="note-cell {{item.noteFlags.n6 ? 'show' : 'hide'}}" style="color: {{theme.colors.note}};">6</text>
+            <text class="note-cell {{item.noteFlags.n7 ? 'show' : 'hide'}}" style="color: {{theme.colors.note}};">7</text>
+            <text class="note-cell {{item.noteFlags.n8 ? 'show' : 'hide'}}" style="color: {{theme.colors.note}};">8</text>
+            <text class="note-cell {{item.noteFlags.n9 ? 'show' : 'hide'}}" style="color: {{theme.colors.note}};">9</text>
+          </view>
         </view>
       </block>
       
@@ -55,6 +63,14 @@
           <text class="pause-icon">⏸</text>
           <text class="pause-text">游戏已暂停</text>
           <text class="pause-hint">点击"继续"按钮恢复游戏</text>
+          
+          <!-- 暂停时的操作按钮 -->
+          <view class="pause-actions">
+            <button class="pause-action-btn" style="background: linear-gradient(135deg, {{theme.colors.primary}}, {{theme.colors.primaryDark}}); box-shadow: 0 4rpx 12rpx {{theme.colors.shadow}};" bindtap="onNewGame">
+              <text class="pause-action-icon">🔄</text>
+              <text class="pause-action-label">新游戏</text>
+            </button>
+          </view>
         </view>
       </view>
     </view>
@@ -64,44 +80,40 @@
     <!-- 功能按钮行 -->
     <view class="toolbar-actions">
       <button class="tool-btn" bindtap="onUndo" disabled="{{!canUndo}}">
-        <text class="tool-icon">↶</text>
-        <text class="tool-label">撤销</text>
+        <text class="tool-icon" style="color: {{theme.colors.textDark}};">↶</text>
+        <text class="tool-label" style="color: {{theme.colors.textDark}};">撤销</text>
       </button>
       
-      <button class="tool-btn {{isNoteMode ? 'active' : ''}}" bindtap="onToggleNoteMode">
-        <text class="tool-icon">✎</text>
-        <text class="tool-label">{{isNoteMode ? '填数' : '笔记'}}</text>
+      <button class="tool-btn" bindtap="onClearTap">
+        <text class="tool-icon" style="color: {{theme.colors.textDark}};">🧹</text>
+        <text class="tool-label" style="color: {{theme.colors.textDark}};">清除</text>
+      </button>
+      
+      <button class="tool-btn {{isNoteMode ? 'active' : ''}}" style="{{isNoteMode ? 'background: ' + theme.colors.primaryLight + '; color: ' + theme.colors.textWhite + ';' : ''}}" bindtap="onToggleNoteMode">
+        <text class="tool-icon" style="{{isNoteMode ? 'color: ' + theme.colors.textWhite + ';' : 'color: ' + theme.colors.textDark + ';'}}">✎</text>
+        <text class="tool-label" style="{{isNoteMode ? 'color: ' + theme.colors.textWhite + ';' : 'color: ' + theme.colors.textDark + ';'}}">{{isNoteMode ? '填数' : '笔记'}}</text>
       </button>
       
       <button class="tool-btn" bindtap="onHint">
-        <text class="tool-icon">💡</text>
-        <text class="tool-label">提示</text>
+        <text class="tool-icon" style="color: {{theme.colors.textDark}};">💡</text>
+        <text class="tool-label" style="color: {{theme.colors.textDark}};">提示</text>
       </button>
       
-      <button class="tool-btn {{isPaused ? 'active' : ''}}" bindtap="onPause">
-        <text class="tool-icon">{{isPaused ? '▶' : '⏸'}}</text>
-        <text class="tool-label">{{isPaused ? '继续' : '暂停'}}</text>
+      <button class="tool-btn {{isPaused ? 'active' : ''}}" style="{{isPaused ? 'background: ' + theme.colors.primaryLight + '; color: ' + theme.colors.textWhite + ';' : ''}}" bindtap="onPause">
+        <text class="tool-icon" style="{{isPaused ? 'color: ' + theme.colors.textWhite + ';' : 'color: ' + theme.colors.textDark + ';'}}">{{isPaused ? '▶' : '⏸'}}</text>
+        <text class="tool-label" style="{{isPaused ? 'color: ' + theme.colors.textWhite + ';' : 'color: ' + theme.colors.textDark + ';'}}">{{isPaused ? '继续' : '暂停'}}</text>
       </button>
     </view>
     
     <!-- 数字1-9横向排列 -->
     <view class="number-grid">
       <block wx:for="{{[1,2,3,4,5,6,7,8,9]}}" wx:key="*this">
-        <view class="number-btn {{isNoteMode ? 'note-mode' : ''}}" data-num="{{item}}" bindtap="onNumberTap">
-          {{item}}
+        <view class="number-btn {{isNoteMode ? 'note-mode' : ''}}" style="border-color: {{theme.colors.border}}; {{isNoteMode ? 'background: ' + theme.colors.primaryLight + ';' : ''}}" data-num="{{item}}" bindtap="onNumberTap">
+          <text class="number-main" style="color: {{isNoteMode ? theme.colors.textWhite : theme.colors.textDark}};">{{item}}</text>
+          <text class="number-count" style="color: {{isNoteMode ? 'rgba(255, 255, 255, 0.8)' : theme.colors.textLight}};">{{numberCounts[item - 1]}}</text>
         </view>
       </block>
     </view>
-    
-    <!-- 清除按钮 -->
-    <view class="pad-actions">
-      <button class="clear-btn" bindtap="onClearTap">🗑️ 清除</button>
-    </view>
-    </view>
-    
-    <!-- 广告位预留区域 -->
-    <view class="ad-placeholder">
-      <text class="ad-text">📢 广告位预留</text>
     </view>
   </view>
 </view>

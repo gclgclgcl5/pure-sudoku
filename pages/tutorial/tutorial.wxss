@@ -1,0 +1,254 @@
+/* 游戏教程页面样式 */
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 40rpx 32rpx;
+}
+
+/* 进度条 */
+.progress-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 48rpx;
+}
+
+.progress-dots {
+  display: flex;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+
+.dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.dot.active {
+  width: 32rpx;
+  border-radius: 8rpx;
+  transform: scale(1.2);
+}
+
+.dot.completed {
+  opacity: 1;
+}
+
+.progress-text {
+  font-size: 24rpx;
+}
+
+/* 教程内容 */
+.tutorial-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.step-header {
+  text-align: center;
+  margin-bottom: 32rpx;
+}
+
+.step-icon {
+  font-size: 80rpx;
+  display: block;
+  margin-bottom: 16rpx;
+}
+
+.step-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  display: block;
+}
+
+.step-description {
+  text-align: center;
+  font-size: 28rpx;
+  line-height: 44rpx;
+  margin-bottom: 48rpx;
+  white-space: pre-line;
+}
+
+/* 示例棋盘 */
+.demo-board-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.demo-board {
+  display: grid;
+  grid-template-columns: repeat(9, 60rpx);
+  gap: 2rpx;
+  background-color: #2d3748;
+  padding: 4rpx;
+  border-radius: 8rpx;
+  margin-bottom: 32rpx;
+}
+
+.demo-cell {
+  width: 60rpx;
+  height: 60rpx;
+  background-color: #FFFFFF;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.demo-cell.highlight {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.demo-number {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 60rpx;
+  height: 60rpx;
+  line-height: 60rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: bold;
+}
+
+/* 3x3边框 */
+.demo-cell.border-right::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 3rpx;
+  background-color: #1a202c;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.demo-cell.border-bottom::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3rpx;
+  background-color: #1a202c;
+  pointer-events: none;
+  z-index: 100;
+}
+
+/* 提示气泡 */
+.tooltip {
+  position: relative;
+  padding: 20rpx 24rpx;
+  border-radius: 12rpx;
+  max-width: 500rpx;
+  text-align: center;
+  font-size: 26rpx;
+  line-height: 40rpx;
+  animation: float 2s ease-in-out infinite;
+}
+
+.tooltip-arrow {
+  position: absolute;
+  top: -12rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 12rpx solid transparent;
+  border-right: 12rpx solid transparent;
+  border-top: 12rpx solid;
+}
+
+/* 大图标（欢迎/完成页） */
+.big-icon {
+  font-size: 200rpx;
+  margin: 80rpx 0;
+  animation: bounce 2s ease-in-out infinite;
+}
+
+/* 底部按钮 */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  margin-top: 48rpx;
+}
+
+.btn-primary, .btn-secondary {
+  width: 100%;
+  height: 88rpx;
+  border-radius: 44rpx;
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #FFFFFF;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary {
+  animation: slideInUp 0.5s ease;
+}
+
+.btn-secondary {
+  background: transparent;
+  border: 3rpx solid;
+}
+
+.btn-skip {
+  background: transparent;
+  border: none;
+  font-size: 28rpx;
+  height: 60rpx;
+}
+
+/* 动画 */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8rpx);
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20rpx);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(40rpx);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+

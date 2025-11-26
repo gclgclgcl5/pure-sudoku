@@ -1,0 +1,103 @@
+<!-- 统计页面 -->
+<view class="container" style="background: linear-gradient(180deg, {{theme.colors.background}} 0%, {{theme.colors.background}} 100%);">
+  <!-- 顶部摘要卡片 -->
+  <view class="summary-card" style="background: linear-gradient(135deg, {{theme.colors.primary}}, {{theme.colors.primaryDark}}); box-shadow: 0 4rpx 12rpx {{theme.colors.shadowStrong}};">
+    <view class="summary-header">
+      <text class="summary-icon">📊</text>
+      <text class="summary-title">游戏统计</text>
+    </view>
+    
+    <view class="summary-grid">
+      <view class="summary-item">
+        <text class="summary-value">{{statistics.totalGames}}</text>
+        <text class="summary-label">总游戏数</text>
+      </view>
+      <view class="summary-item">
+        <text class="summary-value">{{statistics.completedGames}}</text>
+        <text class="summary-label">完成数</text>
+      </view>
+      <view class="summary-item">
+        <text class="summary-value">{{getCompletionRate()}}%</text>
+        <text class="summary-label">完成率</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 详细数据 -->
+  <view class="section">
+    <view class="section-title">
+      <text class="title-icon">📈</text>
+      <text class="title-text" style="color: {{theme.colors.textDark}};">详细数据</text>
+    </view>
+    
+    <view class="data-cards">
+      <view class="data-card" style="box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}}; border-left: 4rpx solid {{theme.colors.primary}};">
+        <view class="data-icon">⏱️</view>
+        <view class="data-content">
+          <text class="data-label" style="color: {{theme.colors.textMedium}};">平均用时</text>
+          <text class="data-value" style="color: {{theme.colors.textDark}};">{{getAverageTime()}}</text>
+        </view>
+      </view>
+      
+      <view class="data-card" style="box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}}; border-left: 4rpx solid {{theme.colors.primary}};">
+        <view class="data-icon">❌</view>
+        <view class="data-content">
+          <text class="data-label" style="color: {{theme.colors.textMedium}};">平均错误</text>
+          <text class="data-value" style="color: {{theme.colors.textDark}};">{{getAverageErrors()}}</text>
+        </view>
+      </view>
+      
+      <view class="data-card" style="box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}}; border-left: 4rpx solid {{theme.colors.primary}};">
+        <view class="data-icon">📅</view>
+        <view class="data-content">
+          <text class="data-label" style="color: {{theme.colors.textMedium}};">最近游戏</text>
+          <text class="data-value" style="color: {{theme.colors.textDark}};">{{statistics.lastPlayDate || '暂无'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 最佳时间 -->
+  <view class="section">
+    <view class="section-title">
+      <text class="title-icon">🏆</text>
+      <text class="title-text" style="color: {{theme.colors.textDark}};">最佳时间</text>
+    </view>
+    
+    <view class="best-times">
+      <view class="time-item" style="background: {{theme.colors.sameNumber}}; box-shadow: 0 2rpx 6rpx {{theme.colors.shadow}};">
+        <text class="time-label" style="color: {{theme.colors.textMedium}};">简单</text>
+        <text class="time-value" style="color: {{theme.colors.primary}};">{{bestTimes.easy}}</text>
+      </view>
+      
+      <view class="time-item" style="background: {{theme.colors.sameNumber}}; box-shadow: 0 2rpx 6rpx {{theme.colors.shadow}};">
+        <text class="time-label" style="color: {{theme.colors.textMedium}};">中等</text>
+        <text class="time-value" style="color: {{theme.colors.primary}};">{{bestTimes.medium}}</text>
+      </view>
+      
+      <view class="time-item" style="background: {{theme.colors.sameNumber}}; box-shadow: 0 2rpx 6rpx {{theme.colors.shadow}};">
+        <text class="time-label" style="color: {{theme.colors.textMedium}};">困难</text>
+        <text class="time-value" style="color: {{theme.colors.primary}};">{{bestTimes.hard}}</text>
+      </view>
+      
+      <view class="time-item" style="background: {{theme.colors.sameNumber}}; box-shadow: 0 2rpx 6rpx {{theme.colors.shadow}};">
+        <text class="time-label" style="color: {{theme.colors.textMedium}};">专家</text>
+        <text class="time-value" style="color: {{theme.colors.primary}};">{{bestTimes.expert}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 重置按钮 -->
+  <view class="actions">
+    <button class="reset-btn" style="background: {{theme.colors.error}}; box-shadow: 0 4rpx 12rpx {{theme.colors.shadow}};" bindtap="onResetTap">
+      <text class="reset-icon">🗑️</text>
+      <text class="reset-text">重置所有统计数据</text>
+    </button>
+  </view>
+
+  <!-- 提示信息 -->
+  <view class="footer">
+    <text class="footer-text" style="color: {{theme.colors.textLight}};">💡 重置后将清空所有统计数据和最佳时间</text>
+  </view>
+</view>
+

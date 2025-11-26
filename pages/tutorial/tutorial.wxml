@@ -1,0 +1,85 @@
+<!-- 游戏教程页面 -->
+<view class="container" style="background: {{theme.colors.background}};">
+  
+  <!-- 进度指示器 -->
+  <view class="progress-bar">
+    <view class="progress-dots">
+      <block wx:for="{{totalSteps + 1}}" wx:key="index">
+        <view class="dot {{currentStep === index ? 'active' : ''}} {{currentStep > index ? 'completed' : ''}}" 
+              style="background: {{currentStep >= index ? theme.colors.primary : theme.colors.border}};"></view>
+      </block>
+    </view>
+    <text class="progress-text" style="color: {{theme.colors.textMedium}};">
+      {{currentStep + 1}} / {{totalSteps + 1}}
+    </text>
+  </view>
+
+  <!-- 教程内容区域 -->
+  <view class="tutorial-content">
+    
+    <!-- 标题和图标 -->
+    <view class="step-header">
+      <text class="step-icon">{{steps[currentStep].icon}}</text>
+      <text class="step-title" style="color: {{theme.colors.textDark}};">
+        {{steps[currentStep].title}}
+      </text>
+    </view>
+
+    <!-- 描述文字 -->
+    <view class="step-description">
+      <text style="color: {{theme.colors.textMedium}};">{{steps[currentStep].description}}</text>
+    </view>
+
+    <!-- 示例棋盘 -->
+    <view class="demo-board-container" wx:if="{{steps[currentStep].showBoard}}">
+      <view class="demo-board">
+        <block wx:for="{{demoBoard}}" wx:key="index">
+          <view class="demo-cell {{item.isHighlight ? 'highlight' : ''}} {{item.isRightBorder ? 'border-right' : ''}} {{item.isBottomBorder ? 'border-bottom' : ''}}"
+                style="{{item.isHighlight ? 'background-color: ' + theme.colors.selected + ';' : 'background-color: ' + theme.colors.boardBg + ';'}}">
+            <view class="demo-number" wx:if="{{item.value}}" style="color: {{item.isHighlight ? theme.colors.selectedText : theme.colors.textLight}};">
+              {{item.value}}
+            </view>
+          </view>
+        </block>
+      </view>
+
+      <!-- 提示气泡 -->
+      <view class="tooltip" style="background: {{theme.colors.primary}}; box-shadow: 0 4rpx 12rpx {{theme.colors.shadow}};">
+        <text style="color: {{theme.colors.textWhite}};">
+          {{currentStep === 1 ? '这一行只有数字6没有填入，应该选择数字6' : currentStep === 2 ? '这一列只有数字3没有填入，应该选择数字3' : currentStep === 3 ? '这个3×3宫数字5没有填入，应该选择数字5' : '请完成这个区域'}}
+        </text>
+        <view class="tooltip-arrow" style="border-top-color: {{theme.colors.primary}};"></view>
+      </view>
+    </view>
+
+    <!-- 欢迎/完成页面的大图标 -->
+    <view class="big-icon" wx:if="{{!steps[currentStep].showBoard}}">
+      <text>{{steps[currentStep].icon}}</text>
+    </view>
+
+  </view>
+
+  <!-- 底部按钮区域 -->
+  <view class="action-buttons">
+    <button class="btn-secondary" 
+            wx:if="{{currentStep > 0}}"
+            bindtap="onPrev"
+            style="border-color: {{theme.colors.primary}}; color: {{theme.colors.primary}};">
+      上一步
+    </button>
+    
+    <button class="btn-primary" 
+            bindtap="onNext"
+            style="background: linear-gradient(135deg, {{theme.colors.primary}}, {{theme.colors.primaryDark}}); box-shadow: 0 4rpx 12rpx {{theme.colors.shadow}};">
+      {{steps[currentStep].buttonText}}
+    </button>
+
+    <button class="btn-skip" 
+            bindtap="onSkip"
+            style="color: {{theme.colors.textLight}};">
+      跳过教程
+    </button>
+  </view>
+
+</view>
+

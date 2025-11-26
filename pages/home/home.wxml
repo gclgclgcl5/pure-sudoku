@@ -1,0 +1,30 @@
+<!-- 开始页面 -->
+<view class="container" style="background: linear-gradient(180deg, {{theme.colors.background}} 0%, {{theme.colors.background}} 100%);">
+  <!-- 顶部标题区域 -->
+  <view class="header">
+    <view class="logo">🧩</view>
+    <text class="title" style="color: {{theme.colors.primary}};">纯粹数独训练</text>
+    <text class="subtitle" style="color: {{theme.colors.textMedium}};">Pure Sudoku</text>
+  </view>
+
+  <!-- 菜单列表 -->
+  <view class="menu-list">
+    <block wx:for="{{menuItems}}" wx:key="id">
+      <view class="menu-item" style="box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}};" data-item="{{item}}" bindtap="onMenuTap">
+        <view class="menu-icon">{{item.icon}}</view>
+        <view class="menu-content">
+          <text class="menu-title" style="color: {{theme.colors.textDark}};">{{item.title}}</text>
+          <text class="menu-desc" style="color: {{theme.colors.textMedium}};">{{item.desc}}</text>
+        </view>
+        <view class="menu-arrow">›</view>
+      </view>
+    </block>
+  </view>
+
+  <!-- 底部版本信息 -->
+  <view class="footer">
+    <text class="version">v2.0.0</text>
+    <text class="copyright">© 2025 纯粹数独训练</text>
+  </view>
+</view>
+

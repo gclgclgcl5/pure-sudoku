@@ -1,0 +1,189 @@
+/* 公告页面样式 - 宁静青蓝主题 */
+page {
+  background: linear-gradient(180deg, #F8FAFB 0%, #EDF5F5 100%);
+}
+
+.container {
+  min-height: 100vh;
+  padding: 20rpx;
+  padding-bottom: 120rpx; /* 为TabBar留出空间 */
+}
+
+/* 区域标题 */
+.section {
+  margin-bottom: 30rpx;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+  padding: 0 8rpx;
+}
+
+.title-icon {
+  font-size: 32rpx;
+}
+
+.title-text {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #2C5F5D;
+}
+
+/* 公告卡片 */
+.announcements {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.announcement-card {
+  background: linear-gradient(135deg, #5EAAA8 0%, #4A8886 100%);
+  border-radius: 16rpx;
+  padding: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(94, 170, 168, 0.25);
+}
+
+.announcement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.announcement-title {
+  font-size: 30rpx;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.announcement-date {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.announcement-content {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.95);
+  line-height: 1.6;
+}
+
+/* 教程卡片 */
+.tutorials {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.tutorial-card {
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(94, 170, 168, 0.1);
+  transition: all 0.3s ease;
+}
+
+.tutorial-card.active {
+  box-shadow: 0 4rpx 16rpx rgba(94, 170, 168, 0.2);
+}
+
+.tutorial-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tutorial-title {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex: 1;
+}
+
+.tutorial-icon {
+  font-size: 32rpx;
+}
+
+.tutorial-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #2C5F5D;
+}
+
+.tutorial-arrow {
+  font-size: 24rpx;
+  color: #5EAAA8;
+  transition: transform 0.3s ease;
+}
+
+.tutorial-card.active .tutorial-arrow {
+  transform: rotate(90deg);
+}
+
+/* 教程内容 */
+.tutorial-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.tutorial-content.show {
+  max-height: 2000rpx;
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #e2e8f0;
+}
+
+.content-line {
+  display: block;
+  font-size: 26rpx;
+  color: #6B9A99;
+  line-height: 1.8;
+  margin-bottom: 8rpx;
+}
+
+.content-line:last-child {
+  margin-bottom: 0;
+}
+
+/* 底部提示 */
+.footer {
+  margin-top: 20rpx;
+  padding: 20rpx;
+  text-align: center;
+}
+
+.footer-text {
+  font-size: 24rpx;
+  color: #9BBCBB;
+}
+
+/* 动画效果 */
+.announcement-card {
+  animation: slideIn 0.5s ease-out;
+}
+
+.tutorial-card {
+  animation: slideIn 0.5s ease-out;
+}
+
+.tutorial-card:nth-child(1) { animation-delay: 0.05s; }
+.tutorial-card:nth-child(2) { animation-delay: 0.1s; }
+.tutorial-card:nth-child(3) { animation-delay: 0.15s; }
+.tutorial-card:nth-child(4) { animation-delay: 0.2s; }
+.tutorial-card:nth-child(5) { animation-delay: 0.25s; }
+.tutorial-card:nth-child(6) { animation-delay: 0.3s; }
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

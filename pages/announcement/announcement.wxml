@@ -1,0 +1,59 @@
+<!-- 公告页面 -->
+<view class="container" style="background: linear-gradient(180deg, {{theme.colors.background}} 0%, {{theme.colors.background}} 100%);">
+  <!-- 公告区域 -->
+  <view class="section">
+    <view class="section-title">
+      <text class="title-icon">📢</text>
+      <text class="title-text" style="color: {{theme.colors.textDark}};">最新公告</text>
+    </view>
+    
+    <view class="announcements">
+      <block wx:for="{{announcements}}" wx:key="id">
+        <view class="announcement-card" style="background: linear-gradient(135deg, {{theme.colors.primaryLight}}, {{theme.colors.primary}}); box-shadow: 0 4rpx 12rpx {{theme.colors.shadowStrong}};">
+          <view class="announcement-header">
+            <text class="announcement-title">{{item.title}}</text>
+            <text class="announcement-date">{{item.date}}</text>
+          </view>
+          <text class="announcement-content">{{item.content}}</text>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 游戏教程区域 -->
+  <view class="section">
+    <view class="section-title">
+      <text class="title-icon">📚</text>
+      <text class="title-text" style="color: {{theme.colors.textDark}};">游戏教程</text>
+    </view>
+    
+    <view class="tutorials">
+      <block wx:for="{{tutorials}}" wx:key="id" wx:for-index="index">
+        <view class="tutorial-card {{activeIndex === index ? 'active' : ''}}" 
+              style="box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}}; {{activeIndex === index ? 'border-left: 4rpx solid ' + theme.colors.primary + ';' : ''}}"
+              data-index="{{index}}" 
+              bindtap="onTutorialTap">
+          <view class="tutorial-header">
+            <view class="tutorial-title">
+              <text class="tutorial-icon">{{item.icon}}</text>
+              <text class="tutorial-name" style="color: {{theme.colors.textDark}};">{{item.title}}</text>
+            </view>
+            <text class="tutorial-arrow" style="color: {{theme.colors.primary}};">{{activeIndex === index ? '▼' : '▶'}}</text>
+          </view>
+          
+          <view class="tutorial-content {{activeIndex === index ? 'show' : ''}}">
+            <block wx:for="{{item.content}}" wx:key="*this" wx:for-item="line">
+              <text class="content-line" style="color: {{theme.colors.textMedium}};">{{line}}</text>
+            </block>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <!-- 底部提示 -->
+  <view class="footer">
+    <text class="footer-text" style="color: {{theme.colors.textLight}};">💡 点击教程标题可展开/收起详细内容</text>
+  </view>
+</view>
+

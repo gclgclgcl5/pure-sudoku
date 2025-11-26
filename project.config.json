@@ -49,7 +49,7 @@
   "compileType": "miniprogram",
   "libVersion": "3.5.7",
   "appid": "touristappid",
-  "projectname": "纯粹数独",
+  "projectname": "纯粹数独训练",
   "condition": {},
   "editorSetting": {
     "tabIndent": "insertSpaces",

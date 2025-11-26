@@ -1,13 +1,34 @@
 {
   "pages": [
-    "pages/game/game"
+    "pages/home/home",
+    "pages/game/game",
+    "pages/tutorial/tutorial",
+    "pages/announcement/announcement",
+    "pages/statistics/statistics",
+    "pages/settings/settings"
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#4299e1",
-    "navigationBarTitleText": "数独训练",
+    "navigationBarBackgroundColor": "#5EAAA8",
+    "navigationBarTitleText": "纯粹数独训练",
     "navigationBarTextStyle": "white",
-    "backgroundColor": "#f0f2f5"
+    "backgroundColor": "#F8FAFB"
+  },
+  "tabBar": {
+    "color": "#9BBCBB",
+    "selectedColor": "#5EAAA8",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/home/home",
+        "text": "开始"
+      },
+      {
+        "pagePath": "pages/announcement/announcement",
+        "text": "公告"
+      }
+    ]
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",

@@ -1,5 +1,6 @@
 // 游戏页面 - 阶段4+5版本（可玩的demo）
 const Shudu = require('../../utils/shudu.js');
+const themeModule = require('../../utils/theme.js');
 
 Page({
   data: {
@@ -32,22 +33,76 @@ Page({
     history: [],  // 操作历史栈
     
     // 阶段8: 暂停功能
-    isPaused: false
+    isPaused: false,
+    
+    // 阶段10: 数据统计
+    statistics: {
+      totalGames: 0,
+      completedGames: 0,
+      totalErrors: 0,
+      totalTime: 0,
+      lastPlayDate: ''
+    },
+    
+    // 数字剩余数量 (1-9)
+    numberCounts: [9, 9, 9, 9, 9, 9, 9, 9, 9],
+    
+    // 主题配色
+    theme: null
   },
   
   onLoad(options) {
     console.log('\n========================================');
-    console.log('🎮 数独小程序 - 阶段6：顶部信息栏');
+    console.log('🎮 数独小程序 - 阶段10：数据统计和存档');
     console.log('========================================\n');
     
     // 创建数独实例
     this.shudu = new Shudu();
+    
+    // 加载主题
+    this.applyTheme();
+    
+    // 加载统计数据
+    this.loadStatistics();
     
     // 加载最佳时间
     this.loadBestTime();
     
     // 开始新游戏
     this.startNewGame();
+  },
+
+  onShow() {
+    // 每次显示页面时重新加载主题（从设置页面返回时）
+    this.applyTheme();
+  },
+
+  // 应用主题
+  applyTheme() {
+    const theme = themeModule.getCurrentTheme();
+    this.setData({
+      theme: theme
+    });
+    
+    // 设置导航栏颜色
+    wx.setNavigationBarColor({
+      frontColor: '#ffffff',
+      backgroundColor: theme.colors.primary,
+      animation: {
+        duration: 300,
+        timingFunc: 'easeInOut'
+      }
+    });
+    
+    // 设置TabBar颜色
+    wx.setTabBarStyle({
+      color: theme.colors.textLight,
+      selectedColor: theme.colors.primary,
+      backgroundColor: '#FFFFFF',
+      borderStyle: 'white'
+    });
+    
+    console.log('🎨 已应用主题:', theme.name);
   },
   
   onUnload() {
@@ -76,6 +131,9 @@ Page({
     
     const difficulty = this.data.currentDifficulty;
     
+    // 更新游戏开始统计
+    this.updateGameStart();
+    
     // 生成数独
     const startTime = Date.now();
     this.shudu.generate(difficulty);
@@ -102,6 +160,7 @@ Page({
           isSameNumber: false,
           showHint: false,
           hintValue: '',
+          notes: [],  // 初始化笔记数组为空
           isRightBorder: j === 2 || j === 5,
           isBottomBorder: i === 2 || i === 5
         });
@@ -120,6 +179,9 @@ Page({
       history: [],
       isPaused: false
     });
+    
+    // 计算数字剩余数量
+    this.updateNumberCounts();
     
     // 启动计时器
     this.startTimer();
@@ -225,7 +287,11 @@ Page({
     const cells = this.data.cells;
     cells[selectedIndex].value = num;
     cells[selectedIndex].hasError = hasConflict;
-    cells[selectedIndex].notes = [];  // 清除笔记
+    cells[selectedIndex].notes = [];  // 清除当前格子的笔记
+    cells[selectedIndex].noteFlags = null;  // 清除笔记标志
+    
+    // 🆕 自动清除相关格子的候选数字
+    this.clearRelatedNotes(cell.row, cell.col, num, cells);
     
     // 如果有冲突，错误计数+1
     if (hasConflict) {
@@ -255,10 +321,62 @@ Page({
     // 更新高亮显示（因为数字变了）
     this.updateHighlights(selectedIndex);
     
+    // 更新数字剩余数量
+    this.updateNumberCounts();
+    
     // 检查是否完成
     if (this.checkWinCondition()) {
-      console.log('🎉 游戏完成！');
+      console.log('🎉 牛逼，你成功了！');
       this.showWinMessage();
+    }
+  },
+  
+  // 清除相关格子的候选数字
+  clearRelatedNotes(row, col, num, cells) {
+    console.log('🧹 清除相关格子的候选数字:', num);
+    
+    const boxStartRow = Math.floor(row / 3) * 3;
+    const boxStartCol = Math.floor(col / 3) * 3;
+    
+    for (let i = 0; i < 81; i++) {
+      const cell = cells[i];
+      
+      // 跳过已填入数字的格子
+      if (cell.value) continue;
+      
+      // 检查是否在同一行、列或宫
+      const inSameRow = cell.row === row;
+      const inSameCol = cell.col === col;
+      const inSameBox = cell.row >= boxStartRow && cell.row < boxStartRow + 3 &&
+                        cell.col >= boxStartCol && cell.col < boxStartCol + 3;
+      
+      // 如果在相关区域，从候选数字中移除
+      if (inSameRow || inSameCol || inSameBox) {
+        if (cell.notes && cell.notes.length > 0) {
+          const index = cell.notes.indexOf(num);
+          if (index !== -1) {
+            cell.notes.splice(index, 1);
+            console.log('  ↳ 清除格子', cell.row, cell.col, '的候选数字', num);
+            
+            // 更新笔记标志
+            if (cell.notes.length > 0) {
+              cell.noteFlags = {
+                n1: cell.notes.includes(1),
+                n2: cell.notes.includes(2),
+                n3: cell.notes.includes(3),
+                n4: cell.notes.includes(4),
+                n5: cell.notes.includes(5),
+                n6: cell.notes.includes(6),
+                n7: cell.notes.includes(7),
+                n8: cell.notes.includes(8),
+                n9: cell.notes.includes(9)
+              };
+            } else {
+              cell.noteFlags = null;  // 没有候选数字时清除标志
+            }
+          }
+        }
+      }
     }
   },
   
@@ -276,12 +394,27 @@ Page({
     const index = cell.notes.indexOf(num);
     if (index > -1) {
       cell.notes.splice(index, 1);  // 删除
-      console.log('🗑️ 删除笔记:', num);
+      console.log('🗑️ 删除笔记:', num, '当前笔记:', JSON.stringify(cell.notes));
     } else {
       cell.notes.push(num);  // 添加
-      cell.notes.sort();  // 排序
-      console.log('✎ 添加笔记:', num);
+      cell.notes.sort((a, b) => a - b);  // 排序
+      console.log('✎ 添加笔记:', num, '当前笔记:', JSON.stringify(cell.notes));
     }
+    
+    // 🆕 生成笔记显示标志（用于WXML条件渲染）
+    cell.noteFlags = {
+      n1: cell.notes.includes(1),
+      n2: cell.notes.includes(2),
+      n3: cell.notes.includes(3),
+      n4: cell.notes.includes(4),
+      n5: cell.notes.includes(5),
+      n6: cell.notes.includes(6),
+      n7: cell.notes.includes(7),
+      n8: cell.notes.includes(8),
+      n9: cell.notes.includes(9)
+    };
+    
+    console.log('📝 格子', cell.row, cell.col, '的笔记标志:', JSON.stringify(cell.noteFlags));
     
     this.setData({
       cells: cells
@@ -324,6 +457,7 @@ Page({
     cells[selectedIndex].value = '';
     cells[selectedIndex].hasError = false;
     cells[selectedIndex].notes = [];
+    cells[selectedIndex].noteFlags = null;  // 清除笔记标志
     
     this.setData({
       cells: cells
@@ -331,6 +465,9 @@ Page({
     
     // 更新高亮
     this.updateHighlights(selectedIndex);
+    
+    // 更新数字剩余数量
+    this.updateNumberCounts();
   },
   
   // 取消选中
@@ -385,6 +522,23 @@ Page({
     cell.notes = lastStep.oldNotes;
     cell.hasError = false;
     
+    // 重新生成笔记标志
+    if (cell.notes && cell.notes.length > 0) {
+      cell.noteFlags = {
+        n1: cell.notes.includes(1),
+        n2: cell.notes.includes(2),
+        n3: cell.notes.includes(3),
+        n4: cell.notes.includes(4),
+        n5: cell.notes.includes(5),
+        n6: cell.notes.includes(6),
+        n7: cell.notes.includes(7),
+        n8: cell.notes.includes(8),
+        n9: cell.notes.includes(9)
+      };
+    } else {
+      cell.noteFlags = null;
+    }
+    
     // 更新数独数据
     const row = cell.row;
     const col = cell.col;
@@ -399,6 +553,9 @@ Page({
     
     // 更新高亮
     this.updateHighlights(lastStep.index);
+    
+    // 更新数字剩余数量
+    this.updateNumberCounts();
     
     console.log('↶ 撤销操作');
     
@@ -612,6 +769,55 @@ Page({
     return false;
   },
   
+  // 阶段10: 数据统计功能
+  loadStatistics() {
+    const stats = wx.getStorageSync('gameStatistics');
+    if (stats) {
+      this.setData({
+        statistics: stats
+      });
+      console.log('📊 加载统计数据:', stats);
+    } else {
+      console.log('📊 初始化统计数据');
+    }
+  },
+  
+  saveStatistics() {
+    wx.setStorageSync('gameStatistics', this.data.statistics);
+    console.log('💾 保存统计数据:', this.data.statistics);
+  },
+  
+  // 更新游戏开始统计
+  updateGameStart() {
+    const stats = this.data.statistics;
+    stats.totalGames += 1;
+    stats.lastPlayDate = new Date().toLocaleDateString('zh-CN');
+    
+    this.setData({
+      statistics: stats
+    });
+    
+    this.saveStatistics();
+    console.log('📈 游戏开始统计更新:', stats);
+  },
+  
+  // 更新游戏完成统计
+  updateGameComplete() {
+    const stats = this.data.statistics;
+    stats.completedGames += 1;
+    stats.totalErrors += this.data.errorCount;
+    stats.totalTime += this.data.elapsedTime;
+    
+    this.setData({
+      statistics: stats
+    });
+    
+    this.saveStatistics();
+    console.log('📈 游戏完成统计更新:', stats);
+  },
+  
+  
+  
   // 检查胜利条件
   checkWinCondition() {
     // 检查是否所有格子都填满
@@ -649,19 +855,33 @@ Page({
   showWinMessage() {
     this.stopTimer();
     
+    // 更新游戏完成统计
+    this.updateGameComplete();
+    
+    // 保存最佳时间
     const isNewRecord = this.saveBestTime();
+    
+    // 获取完成率
+    const stats = this.data.statistics;
+    const winRate = ((stats.completedGames / stats.totalGames) * 100).toFixed(1);
+    
     const message = isNewRecord 
-      ? `🎉 恭喜完成！\n⏱️ 用时: ${this.data.currentTime}\n🏆 新纪录！`
-      : `✅ 恭喜完成！\n⏱️ 用时: ${this.data.currentTime}`;
+      ? `🎉 恭喜完成！\n⏱️ 用时: ${this.data.currentTime}\n🏆 新纪录！\n📊 完成率: ${winRate}%`
+      : `✅ 恭喜完成！\n⏱️ 用时: ${this.data.currentTime}\n📊 完成率: ${winRate}%`;
     
     wx.showModal({
       title: '游戏完成',
       content: message,
       confirmText: '再来一局',
-      cancelText: '休息一下',
+      cancelText: '查看统计',
       success: (res) => {
         if (res.confirm) {
           this.startNewGame();
+        } else if (res.cancel) {
+          // 跳转到统计页面
+          wx.navigateTo({
+            url: '/pages/statistics/statistics'
+          });
         }
       }
     });
@@ -696,5 +916,26 @@ Page({
     console.log('\n✅ 可玩Demo加载完成！');
     console.log('💡 点击空格填入数字');
     console.log('========================================\n');
+  },
+  
+  // 计算每个数字的剩余数量 (1-9)
+  updateNumberCounts() {
+    const counts = [0, 0, 0, 0, 0, 0, 0, 0, 0]; // 初始化计数器
+    
+    // 遍历棋盘，统计每个数字出现的次数
+    this.data.cells.forEach(cell => {
+      if (cell.value && cell.value >= 1 && cell.value <= 9) {
+        counts[cell.value - 1]++;
+      }
+    });
+    
+    // 计算剩余数量 (每个数字应该出现9次)
+    const numberCounts = counts.map(count => 9 - count);
+    
+    this.setData({
+      numberCounts: numberCounts
+    });
+    
+    console.log('📊 数字剩余数量:', numberCounts);
   }
 });
