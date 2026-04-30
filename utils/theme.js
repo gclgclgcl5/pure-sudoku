@@ -244,7 +244,55 @@ const THEMES = {
       shadow: 'rgba(120, 144, 156, 0.15)',
       shadowStrong: 'rgba(120, 144, 156, 0.25)'
     }
+  },
+  // 主题7：雨晴（鲜艳版）
+rainShine: {
+  name: '雨晴',
+  id: 'rainShine',
+  icon: '🌦️',
+  description: '归去，也无风雨也无晴',
+  colors: {
+    // 主色调：洗过的明澈天空蓝，比“经典海洋”更亮、更透
+    primary: '#00ACC1',           // 亮潮蓝
+    primaryLight: '#4DD0E1',      // 晴空浅蓝
+    primaryDark: '#00838F',       // 深潮绿（像湖水深处）
+
+    // 背景：雨后空气的清爽感，不灰，带极淡蓝调
+    background: '#F0FCFE',        // 水雾白（比纯白多一丝凉意）
+    boardBg: '#FFFFFF',           // 棋盘纯白，保证亮度对比
+    cardBg: '#FAFEFF',            // 极浅天光
+
+    // 文字：湿润的深绿色，像挂满水珠的树叶
+    textDark: '#0B3C41',          // 深潭墨绿
+    textMedium: '#2E7D82',        // 中等翠绿
+    textLight: '#5BA8AE',         // 浅湖蓝
+    textWhite: '#FFFFFF',
+
+    // 选中高亮：穿透云层的阳光，明黄但不刺眼
+    selected: '#FFB300',          // 正午暖金
+    selectedText: '#1E3B2F',      // 深苔藓绿，对比清晰
+    related: '#B2EBF2',           // 轻快水蓝
+    sameNumber: '#D4F1F4',        // 薄云白蓝
+    fixed: '#F4FCFD',             // 固定格子的清透背景
+
+    // 错误/成功：不加灰，保持鲜艳但色调偏暖/偏冷
+    error: '#FF6B6B',             // 鲜活珊瑚红
+    errorBg: '#FFF0F0',
+    success: '#69D2A0',           // 雨后新叶翠绿
+    successBg: '#F2FCF7',
+
+    note: '#7DD3DE',              // 笔记浅潮蓝
+    hint: '#FFA000',              // 琥珀色提示
+
+    // 边框：像尚未干透的水渍，轻且透
+    border: '#C4EDF2',
+    borderStrong: '#0D5057',      // 深水色，分隔明确
+
+    // 阴影：带透明蓝，像雨后地面上的水洼反光
+    shadow: 'rgba(0, 172, 193, 0.25)',
+    shadowStrong: 'rgba(0, 172, 193, 0.38)'
   }
+}
 };
 
 // 默认主题

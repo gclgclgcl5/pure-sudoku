@@ -1,8 +1,14 @@
 {
   "description": "数独小程序项目配置文件",
   "packOptions": {
-    "ignore": [],
-    "include": []
+  "ignore": [
+    { "type": "folder", "value": ".git" },
+    { "type": "folder", "value": ".cursor" },
+    { "type": "folder", "value": "node_modules" },
+    { "type": "folder", "value": ".cache" },
+    { "type": "file", "value": "*.log" }
+  ],
+  "include": []
   },
   "setting": {
     "bundle": false,
@@ -48,7 +54,7 @@
   },
   "compileType": "miniprogram",
   "libVersion": "3.5.7",
-  "appid": "touristappid",
+  "appid": "wxbcf54c65c0d21c30",
   "projectname": "纯粹数独训练",
   "condition": {},
   "editorSetting": {
