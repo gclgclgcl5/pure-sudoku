@@ -2,7 +2,7 @@
 <view class="container" style="background: linear-gradient(180deg, {{theme.colors.background}} 0%, {{theme.colors.background}} 100%);">
   <!-- 顶部标题区域 -->
   <view class="header">
-    <view class="logo">🧩</view>
+    <view class="logo"><text class="logo-text">{{homeLogoEmoji}}</text></view>
     <text class="title" style="color: {{theme.colors.primary}};">纯粹数独训练</text>
     <text class="subtitle" style="color: {{theme.colors.textMedium}};">Pure Sudoku</text>
   </view>
@@ -19,12 +19,6 @@
         <view class="menu-arrow">›</view>
       </view>
     </block>
-  </view>
-
-  <!-- 底部版本信息 -->
-  <view class="footer">
-    <text class="version">v2.0.0</text>
-    <text class="copyright">© 2025 纯粹数独训练</text>
   </view>
 </view>
 

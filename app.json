@@ -1,6 +1,8 @@
 {
   "pages": [
     "pages/home/home",
+    "pages/collection/collection",
+    "pages/collection-detail/collection-detail",
     "pages/game/game",
     "pages/tutorial/tutorial",
     "pages/announcement/announcement",
@@ -9,14 +11,14 @@
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#5EAAA8",
+    "navigationBarBackgroundColor": "#FFFFFF",
     "navigationBarTitleText": "纯粹数独训练",
     "navigationBarTextStyle": "white",
-    "backgroundColor": "#F8FAFB"
+    "backgroundColor": "#FFFFFF"
   },
   "tabBar": {
-    "color": "#9BBCBB",
-    "selectedColor": "#5EAAA8",
+    "color": "#94A3B8",
+    "selectedColor": "#64748B",
     "backgroundColor": "#FFFFFF",
     "borderStyle": "white",
     "list": [

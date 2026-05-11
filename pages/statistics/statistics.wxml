@@ -17,7 +17,7 @@
         <text class="summary-label">完成数</text>
       </view>
       <view class="summary-item">
-        <text class="summary-value">{{getCompletionRate()}}%</text>
+        <text class="summary-value">{{completionRate}}%</text>
         <text class="summary-label">完成率</text>
       </view>
     </view>
@@ -35,7 +35,7 @@
         <view class="data-icon">⏱️</view>
         <view class="data-content">
           <text class="data-label" style="color: {{theme.colors.textMedium}};">平均用时</text>
-          <text class="data-value" style="color: {{theme.colors.textDark}};">{{getAverageTime()}}</text>
+          <text class="data-value" style="color: {{theme.colors.textDark}};">{{averageTime}}</text>
         </view>
       </view>
       
@@ -43,7 +43,7 @@
         <view class="data-icon">❌</view>
         <view class="data-content">
           <text class="data-label" style="color: {{theme.colors.textMedium}};">平均错误</text>
-          <text class="data-value" style="color: {{theme.colors.textDark}};">{{getAverageErrors()}}</text>
+          <text class="data-value" style="color: {{theme.colors.textDark}};">{{averageErrors}}</text>
         </view>
       </view>
       

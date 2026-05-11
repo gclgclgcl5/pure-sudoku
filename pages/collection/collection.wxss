@@ -1,0 +1,254 @@
+@import '../../styles/pet-dock-shared.wxss';
+
+.page-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 24rpx 30rpx 32rpx;
+  padding-bottom: 120rpx;
+}
+
+/* 顶部：收录进度 */
+.progress-slot {
+  flex-shrink: 0;
+  min-height: 72rpx;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  padding: 8rpx 12rpx 16rpx;
+  box-sizing: border-box;
+}
+
+.progress-slot--pet {
+  min-height: 56rpx;
+}
+
+.progress-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-right: 8rpx;
+}
+
+.progress-num {
+  font-size: 40rpx;
+  font-weight: 700;
+}
+
+.progress-slash,
+.progress-total {
+  font-size: 28rpx;
+}
+
+.progress-pet-hint {
+  font-size: 24rpx;
+  text-align: center;
+}
+
+.cell--locked {
+  opacity: 0.92;
+}
+
+.cell--locked:active {
+  transform: scale(0.98);
+}
+
+.cell-emoji--lock {
+  font-size: 52rpx;
+  line-height: 1.2;
+}
+
+.cell-name--locked {
+  margin-top: 8rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  text-align: center;
+}
+
+.tab-bar {
+  display: flex;
+  flex-shrink: 0;
+  border-radius: 14rpx;
+  padding: 8rpx;
+  margin-bottom: 20rpx;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 14rpx 8rpx;
+  border-radius: 10rpx;
+}
+
+.tab-text {
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+/* ========== 宠物图鉴 Tab ========== */
+/* 与初级/高级「collection-swiper」一致：swiper 在真机对 flex:1 常算出高度为 0，须固定高度 */
+.pet-tab-root {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  padding: 8rpx 0 24rpx;
+  box-sizing: border-box;
+}
+
+.pet-gallery-swiper {
+  width: 100%;
+  flex-shrink: 0;
+  height: 680rpx;
+}
+
+.pet-slide {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 12rpx 8rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.pet-slide-visual {
+  width: 100%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pet-slide-none {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 32rpx;
+  box-sizing: border-box;
+}
+
+.pet-gal-desc {
+  margin-top: 20rpx;
+  font-size: 26rpx;
+  text-align: center;
+  line-height: 1.55;
+  padding: 0 28rpx;
+  box-sizing: border-box;
+}
+
+.pet-go-btn {
+  margin-top: 28rpx;
+  flex-shrink: 0;
+  padding: 22rpx 56rpx;
+  border-radius: 999rpx;
+}
+
+.pet-go-btn:active {
+  transform: scale(0.97);
+  opacity: 0.95;
+}
+
+.pet-active-hint {
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 24rpx;
+  padding: 8rpx 16rpx 0;
+}
+
+.main-area {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hint {
+  flex-shrink: 0;
+  font-size: 24rpx;
+  text-align: center;
+  margin-bottom: 24rpx;
+  padding: 0 16rpx;
+}
+
+.collection-swiper {
+  width: 100%;
+  flex-shrink: 0;
+  height: 680rpx;
+}
+
+.slide-inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 0 4rpx;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 20rpx;
+  width: 100%;
+  max-width: 690rpx;
+  height: 640rpx;
+  box-sizing: border-box;
+}
+
+.cell {
+  border-radius: 20rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 8rpx;
+  box-sizing: border-box;
+}
+
+.cell:active {
+  transform: scale(0.97);
+}
+
+.cell--empty {
+  background: transparent;
+  pointer-events: none;
+}
+
+.cell-emoji {
+  font-size: 64rpx;
+  line-height: 1.2;
+}
+
+.cell-name {
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  font-weight: 600;
+  text-align: center;
+}
+
+.dots-row {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  padding: 24rpx 0 8rpx;
+}
+
+.dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+}

@@ -64,17 +64,45 @@ class Shudu {
 
   // 移除指定数量的数字
   removeNumbers(count) {
-    const positions = [];
-    for (let i = 0; i < 9; i++) {
-      for (let j = 0; j < 9; j++) {
-        positions.push([i, j]);
-      }
-    }
-    this.shuffleArray(positions);
+    let removed = 0;
+    let rounds = 0;
+    const maxRounds = 6;
 
-    for (let i = 0; i < count && i < positions.length; i++) {
-      const [row, col] = positions[i];
-      this.board[row][col] = 0;
+    while (removed < count && rounds < maxRounds) {
+      const positions = [];
+      for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+          if (this.board[i][j] !== 0) {
+            positions.push([i, j]);
+          }
+        }
+      }
+      this.shuffleArray(positions);
+
+      let removedInRound = 0;
+      for (let i = 0; i < positions.length && removed < count; i++) {
+        const [row, col] = positions[i];
+        const backup = this.board[row][col];
+        this.board[row][col] = 0;
+
+        // 仅保留唯一解题目，避免出现多解
+        if (this.hasUniqueSolution(this.board)) {
+          removed++;
+          removedInRound++;
+        } else {
+          this.board[row][col] = backup;
+        }
+      }
+
+      // 当前轮没有进展时提前结束，避免无效循环
+      if (removedInRound === 0) {
+        break;
+      }
+      rounds++;
+    }
+
+    if (removed < count) {
+      console.warn(`⚠️ 在唯一解约束下，本局仅移除 ${removed}/${count} 个数字`);
     }
   }
 
@@ -126,6 +154,48 @@ class Shudu {
       }
     }
     return true;
+  }
+
+  // 检查题目是否有唯一解
+  hasUniqueSolution(board) {
+    const boardCopy = board.map(row => [...row]);
+    return this.countSolutions(boardCopy, 2) === 1;
+  }
+
+  // 统计解数量（达到上限后提前结束）
+  countSolutions(board, limit = 2) {
+    let emptyCell = null;
+    for (let row = 0; row < 9; row++) {
+      for (let col = 0; col < 9; col++) {
+        if (board[row][col] === 0) {
+          emptyCell = { row, col };
+          break;
+        }
+      }
+      if (emptyCell) break;
+    }
+
+    // 没有空格说明找到一个完整解
+    if (!emptyCell) {
+      return 1;
+    }
+
+    const { row, col } = emptyCell;
+    let solutions = 0;
+
+    for (let num = 1; num <= 9; num++) {
+      if (this.isValid(board, row, col, num)) {
+        board[row][col] = num;
+        solutions += this.countSolutions(board, limit - solutions);
+        board[row][col] = 0;
+
+        if (solutions >= limit) {
+          return solutions;
+        }
+      }
+    }
+
+    return solutions;
   }
 
   // 检查指定位置是否有冲突

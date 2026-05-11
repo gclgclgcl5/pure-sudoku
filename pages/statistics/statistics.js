@@ -24,6 +24,9 @@ Page({
       hard: '困难',
       expert: '专家'
     },
+    completionRate: '0.0',
+    averageTime: '00:00',
+    averageErrors: '0.0',
     
     theme: null
   },
@@ -45,6 +48,7 @@ Page({
   applyTheme() {
     const theme = themeModule.getCurrentTheme();
     this.setData({ theme: theme });
+    themeModule.applySystemTheme(theme);
     
     // 设置导航栏颜色
     wx.setNavigationBarColor({
@@ -68,6 +72,8 @@ Page({
     } else {
       console.log('📊 暂无统计数据');
     }
+
+    this.updateComputedStats();
   },
 
   // 加载最佳时间
@@ -121,6 +127,15 @@ Page({
     return (stats.totalErrors / stats.completedGames).toFixed(1);
   },
 
+  // 更新页面展示用统计字段（WXML 不支持直接调用 Page 方法）
+  updateComputedStats() {
+    this.setData({
+      completionRate: this.getCompletionRate(),
+      averageTime: this.getAverageTime(),
+      averageErrors: this.getAverageErrors()
+    });
+  },
+
   // 重置统计数据
   onResetTap() {
     wx.showModal({
@@ -163,7 +178,10 @@ Page({
         medium: '暂无',
         hard: '暂无',
         expert: '暂无'
-      }
+      },
+      completionRate: '0.0',
+      averageTime: '00:00',
+      averageErrors: '0.0'
     });
     
     wx.showToast({

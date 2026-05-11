@@ -1,0 +1,134 @@
+/* 游戏底栏与收集图鉴共用：宠物 + 气泡三档站位与气泡样式 */
+
+.pet-dock-inner {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pet-dock-stage {
+  position: relative;
+  width: 100%;
+  min-height: 188rpx;
+  box-sizing: border-box;
+}
+
+.pet-dock-inner--left .pet-dock-stage {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 16rpx;
+}
+
+.pet-dock-inner--right .pet-dock-stage {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 16rpx;
+}
+
+.pet-dock-inner--right .pet-bubble-text {
+  text-align: left;
+}
+
+.pet-dock-inner--center .pet-dock-stage {
+  min-height: 200rpx;
+}
+
+.pet-dock-inner--center .pet-img-wrap {
+  position: absolute;
+  left: 50%;
+  top: 8rpx;
+  margin-left: -84rpx;
+  z-index: 2;
+}
+
+.pet-dock-inner--center .pet-bubble-wrap {
+  position: absolute;
+  left: 50%;
+  margin-left: 92rpx;
+  top: 0;
+  right: 24rpx;
+  max-width: none;
+  align-self: auto;
+  z-index: 1;
+}
+
+.pet-dock-inner--center .pet-bubble {
+  max-width: 100%;
+}
+
+.pet-img-wrap {
+  width: 168rpx;
+  height: 168rpx;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pet-float 3s ease-in-out infinite;
+}
+
+.pet-img-wrap--shake {
+  animation: pet-shake-hard 0.14s ease-in-out 3;
+}
+
+.pet-img {
+  width: 168rpx;
+  height: 168rpx;
+  display: block;
+}
+
+.pet-img-fallback {
+  font-size: 120rpx;
+  line-height: 1;
+}
+
+@keyframes pet-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8rpx);
+  }
+}
+
+@keyframes pet-shake-hard {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(0) rotate(-6deg);
+  }
+  75% {
+    transform: translateY(0) rotate(6deg);
+  }
+}
+
+.pet-bubble-wrap {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 520rpx;
+  align-self: flex-start;
+}
+
+.pet-bubble {
+  display: inline-block;
+  max-width: 520rpx;
+  vertical-align: top;
+  border-radius: 16rpx;
+  border-width: 1rpx;
+  border-style: solid;
+  padding: 12rpx 16rpx;
+  box-sizing: border-box;
+}
+
+.pet-bubble-text {
+  font-size: 26rpx;
+  line-height: 1.45;
+  text-align: right;
+  word-break: break-word;
+  white-space: pre-wrap;
+}

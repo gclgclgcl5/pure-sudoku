@@ -1,0 +1,33 @@
+<view wx:if="{{ready}}" class="detail-page" style="min-height: 100vh; box-sizing: border-box; background: linear-gradient(180deg, {{theme.colors.background}} 0%, {{theme.colors.background}} 100%);">
+  <swiper
+    class="detail-swiper"
+    style="width: 100%; height: 680rpx;"
+    circular="{{items.length > 1}}"
+    current="{{current}}"
+    bindchange="onDetailSwiperChange"
+  >
+    <block wx:for="{{items}}" wx:key="id">
+      <swiper-item>
+        <view class="detail-slide">
+          <view class="detail-body">
+            <view class="detail-emoji-wrap">
+              <text class="detail-emoji">{{item.emoji}}</text>
+            </view>
+            <text class="detail-name" style="color: {{theme.colors.textDark}};">{{item.name}}</text>
+            <text class="detail-desc" style="color: {{theme.colors.textMedium}};">{{item.desc}}</text>
+          </view>
+        </view>
+      </swiper-item>
+    </block>
+  </swiper>
+
+  <view class="detail-footer" style="background: linear-gradient(180deg, transparent 0%, {{theme.colors.background}} 35%);">
+    <view
+      class="set-home-btn"
+      style="background: linear-gradient(135deg, {{theme.colors.primary}}, {{theme.colors.primaryDark}}); box-shadow: 0 6rpx 20rpx {{theme.colors.shadowStrong}};"
+      bindtap="onSetHomeLogoTap"
+    >
+      <text class="set-home-btn-text" style="color: {{theme.colors.textWhite}};">设为主页图标</text>
+    </view>
+  </view>
+</view>

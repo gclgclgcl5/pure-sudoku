@@ -1,10 +1,8 @@
 /* 公告页面样式 - 宁静青蓝主题 */
-page {
-  background: linear-gradient(180deg, #F8FAFB 0%, #EDF5F5 100%);
-}
 
 .container {
   min-height: 100vh;
+  box-sizing: border-box;
   padding: 20rpx;
   padding-bottom: 120rpx; /* 为TabBar留出空间 */
 }

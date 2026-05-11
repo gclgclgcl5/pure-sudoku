@@ -1,10 +1,9 @@
 /* 游戏页面样式 - 宁静青蓝主题 */
-page {
-  background-color: #F8FAFB;
-}
+@import '../../styles/pet-dock-shared.wxss';
 
 .container {
   min-height: 100vh;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   background: linear-gradient(180deg, #F8FAFB 0%, #EDF5F5 100%);
@@ -189,14 +188,12 @@ page {
   background-color: #C8E8E7;
 }
 
-/* 相同数字高亮 */
+/* 同数字高亮：背景与描边由 game.wxml 内联 theme.colors.sameDigitHighlight / primaryDark */
 .cell.same-number {
-  background-color: #D4EDEC !important;
-  box-shadow: inset 0 0 0 2rpx #7FCCC9;
+  z-index: 1;
 }
 
 .cell.same-number .cell-text {
-  color: #5EAAA8;
   font-weight: 700;
   font-size: 38rpx;
 }
@@ -424,20 +421,31 @@ page {
   }
 }
 
-/* 底部工具栏 - 改为跟随棋盘，不固定底部 */
+/* 底部工具栏：外层仅负责全宽对齐；白底在 .bottom-toolbar-keys，宠物在 .pet-dock-strip */
 .bottom-toolbar {
-  background: #ffffff;
-  border-top: 2rpx solid #e2e8f0;
-  border-bottom: 2rpx solid #e2e8f0;
-  padding: 12rpx 20rpx;
-  margin: 16rpx -30rpx 0 -30rpx;  /* 负margin让工具栏与屏幕等宽 */
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  background: transparent;
+  margin: 16rpx -30rpx 0 -30rpx; /* 负 margin 与内容区等宽 */
+  padding: 0;
+  box-shadow: none;
 }
 
-/* 功能按钮行 - 更紧凑 */
+.bottom-toolbar-keys {
+  padding: 12rpx 20rpx;
+  box-sizing: border-box;
+}
+
+/* 宠物条：主题浅底，与上方数字键区域区分（背景色由 WXML 内联 theme.colors.background） */
+.pet-dock-strip {
+  padding: 12rpx 20rpx calc(16rpx + env(safe-area-inset-bottom));
+  box-sizing: border-box;
+}
+
+/* 功能按钮行 - 与下方数字键同高，视觉统一 */
 .toolbar-actions {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 5rpx;
   margin-bottom: 10rpx;
   padding: 0 5rpx;
 }
@@ -446,14 +454,28 @@ page {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3rpx;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+  height: 100rpx;
+  min-height: 100rpx;
+  max-height: 100rpx;
+  box-sizing: border-box;
+  gap: 2rpx;
   background: #f7fafc;
   border: 2rpx solid #e2e8f0;
-  border-radius: 8rpx;
-  padding: 8rpx 16rpx;
-  font-size: 22rpx;
-  min-width: 130rpx;
+  border-radius: 12rpx;
+  padding: 4rpx 6rpx;
+  margin: 0;
+  line-height: 1.1;
+  font-size: 20rpx;
   transition: all 0.2s;
+}
+
+.bottom-toolbar.number-pad-double .tool-btn {
+  height: 108rpx;
+  min-height: 108rpx;
+  max-height: 108rpx;
 }
 
 .tool-btn:active {
@@ -482,33 +504,83 @@ page {
   }
 }
 
+.tool-btn::after {
+  border: none;
+}
+
 .tool-btn:disabled {
   opacity: 0.4;
   transform: none;
 }
 
 .tool-icon {
-  font-size: 28rpx;
+  font-size: 26rpx;
   color: #5EAAA8;
+  line-height: 1;
 }
 
 .tool-label {
-  font-size: 20rpx;
+  font-size: 18rpx;
   color: #2C5F5D;
   font-weight: 500;
+  line-height: 1;
 }
 
 /* 数字网格 - 更紧凑 */
 .number-grid {
-  display: grid;
-  grid-template-columns: repeat(9, 1fr);
-  gap: 5rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
   margin-bottom: 10rpx;
+}
+
+.number-row {
+  display: grid;
+  gap: 5rpx;
+}
+
+.number-grid.one-row .number-row {
+  grid-template-columns: repeat(9, 1fr);
+}
+
+.number-grid.two-rows .number-row:first-child {
+  grid-template-columns: repeat(5, 1fr);
+  /* 固定行高，避免 Grid 行被内容撑得比第二行更高 */
+  grid-auto-rows: 108rpx;
+  align-items: stretch;
+}
+
+/* 双行第二行：与第一行单格同宽，整体居中（不铺满整行） */
+.number-grid.two-rows .number-row:last-child {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 5rpx;
+  height: 108rpx;
+  min-height: 108rpx;
+  max-height: 108rpx;
+  box-sizing: border-box;
+}
+
+.number-grid.two-rows .number-row:last-child .number-btn {
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: calc((100% - 20rpx) / 5);
+  width: calc((100% - 20rpx) / 5);
+  max-width: calc((100% - 20rpx) / 5);
+  height: 108rpx;
+  min-height: 108rpx;
+  max-height: 108rpx;
+  box-sizing: border-box;
 }
 
 /* 数字按钮 - 增大尺寸，显示剩余数量 */
 .number-btn {
   height: 100rpx;
+  min-height: 100rpx;
+  max-height: 100rpx;
+  box-sizing: border-box;
   background: #f7fafc;
   border-radius: 12rpx;
   display: flex;
@@ -519,6 +591,12 @@ page {
   transition: all 0.2s;
   border: 2rpx solid #e2e8f0;
   padding: 8rpx 0;
+}
+
+.number-grid.two-rows .number-btn {
+  height: 108rpx;
+  min-height: 108rpx;
+  max-height: 108rpx;
 }
 
 .number-main {
@@ -589,3 +667,164 @@ page {
 
 /* 操作按钮 */
 /* 移除提示信息（不需要了） */
+
+/* ========== 宠物 dock ========== */
+.pet-dock {
+  margin-top: 0;
+  padding: 4rpx 0 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 双宠：左右固定，各半宽气泡不顶到中间 */
+.pet-dock-dual-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+  gap: 8rpx;
+}
+
+.pet-dock-half {
+  flex: 1;
+  width: 0;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.pet-dock-half .pet-dock-inner {
+  width: 100%;
+}
+
+.pet-dock-half .pet-bubble-wrap {
+  max-width: 100%;
+}
+
+.pet-dock-half .pet-bubble {
+  max-width: 100%;
+}
+
+/* 游戏内宠物气泡：淡入淡出（由 petBubbleFadeIn / petBubble1FadeIn 驱动） */
+.pet-bubble.pet-bubble--gamefx {
+  opacity: 0;
+  transform: translateY(10rpx);
+  transition: opacity 0.28s ease, transform 0.28s ease;
+}
+
+.pet-bubble.pet-bubble--gamefx.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ========== 通关宠物蒙层 ========== */
+.win-pet-mask {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.48);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx 32rpx;
+  box-sizing: border-box;
+}
+
+.win-pet-card {
+  width: 100%;
+  max-width: 620rpx;
+  border-radius: 20rpx;
+  padding: 36rpx 28rpx 32rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.win-pet-hero-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 24rpx;
+  width: 100%;
+  margin-bottom: 12rpx;
+  box-sizing: border-box;
+}
+
+.win-pet-hero {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.win-pet-img {
+  width: 200rpx;
+  height: 200rpx;
+  margin-bottom: 12rpx;
+}
+
+.win-pet-img--dual {
+  width: 160rpx;
+  height: 160rpx;
+  margin-bottom: 0;
+}
+
+.win-pet-fallback {
+  font-size: 140rpx;
+  line-height: 1;
+  margin-bottom: 8rpx;
+}
+
+.win-pet-fallback--dual {
+  font-size: 110rpx;
+  margin-bottom: 0;
+}
+
+.win-pet-name {
+  font-size: 30rpx;
+  font-weight: 700;
+  margin-bottom: 16rpx;
+}
+
+.win-pet-body {
+  font-size: 26rpx;
+  line-height: 1.55;
+  text-align: center;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin-bottom: 28rpx;
+  width: 100%;
+}
+
+.win-pet-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  width: 100%;
+}
+
+.win-pet-btn {
+  border-radius: 999rpx;
+  padding: 22rpx 24rpx;
+  text-align: center;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.win-pet-btn--ghost {
+  border-width: 1rpx;
+  border-style: solid;
+  background: transparent;
+}
+
+.win-pet-btn:active {
+  opacity: 0.9;
+  transform: scale(0.98);
+}

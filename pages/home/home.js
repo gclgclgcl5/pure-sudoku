@@ -1,8 +1,10 @@
 // 开始页面 - 首页
 const themeModule = require('../../utils/theme.js');
+const collectionModule = require('../../utils/collection.js');
 
 Page({
   data: {
+    homeLogoEmoji: collectionModule.getHomeLogoEmoji(),
     menuItems: [
       {
         id: 'start',
@@ -26,10 +28,17 @@ Page({
         path: '/pages/statistics/statistics'
       },
       {
+        id: 'collection',
+        title: '收集',
+        icon: '🎨',
+        desc: '图鉴与成就图标一览',
+        path: '/pages/collection/collection'
+      },
+      {
         id: 'settings',
         title: '设置',
         icon: '⚙️',
-        desc: '自定义游戏设置',
+        desc: '自定义游戏外观和设置',
         path: '/pages/settings/settings'
       }
     ],
@@ -47,7 +56,9 @@ Page({
 
   applyTheme() {
     const theme = themeModule.getCurrentTheme();
-    this.setData({ theme: theme });
+    const homeLogoEmoji = collectionModule.getHomeLogoEmoji();
+    this.setData({ theme: theme, homeLogoEmoji });
+    themeModule.applySystemTheme(theme);
     
     // 设置导航栏颜色
     wx.setNavigationBarColor({
@@ -59,13 +70,7 @@ Page({
       }
     });
     
-    // 设置TabBar颜色
-    wx.setTabBarStyle({
-      color: theme.colors.textLight,
-      selectedColor: theme.colors.primary,
-      backgroundColor: '#FFFFFF',
-      borderStyle: 'white'
-    });
+    // TabBar 与系统根层背景色由 themeModule.applySystemTheme 统一处理
   },
 
   // 点击菜单项

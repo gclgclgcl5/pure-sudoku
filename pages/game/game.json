@@ -1,6 +1,6 @@
 {
   "navigationBarTitleText": "纯粹数独训练",
-  "disableScroll": true,
+  "disableScroll": false,
   "usingComponents": {}
 }
 

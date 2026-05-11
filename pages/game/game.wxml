@@ -29,15 +29,15 @@
     </view>
     
     <!-- 数独棋盘 -->
-    <view class="board {{isPaused ? 'paused' : ''}}">
+    <view class="board {{isPaused ? 'paused' : ''}}" style="background-color: {{theme.colors.boardFrame}};">
       <block wx:for="{{cells}}" wx:key="index">
         <view 
           class="cell {{item.isFixed ? 'fixed' : ''}} {{item.index === selectedIndex ? 'selected' : ''}} {{item.isRelated ? 'related' : ''}} {{item.isSameNumber ? 'same-number' : ''}} {{item.hasError ? 'error' : ''}} {{item.showHint ? 'hint-active' : ''}} {{item.isRightBorder ? 'border-right' : ''}} {{item.isBottomBorder ? 'border-bottom' : ''}}"
-          style="{{item.index === selectedIndex ? 'background-color: ' + theme.colors.selected + ' !important;' : item.isRelated ? 'background-color: ' + theme.colors.related + ';' : item.isSameNumber ? 'background-color: ' + theme.colors.sameNumber + ';' : item.isFixed ? 'background-color: ' + theme.colors.fixed + ';' : ''}}{{item.hasError ? ' background-color: ' + theme.colors.errorBg + ' !important;' : ''}}{{item.showHint ? ' background: linear-gradient(135deg, ' + theme.colors.hint + ', ' + theme.colors.success + ') !important;' : ''}}"
+          style="{{item.index === selectedIndex ? 'background-color: ' + theme.colors.selected + ' !important;' : item.isRelated ? 'background-color: ' + theme.colors.related + ';' : item.isSameNumber ? 'background-color: ' + theme.colors.sameDigitHighlight + '; box-shadow: inset 0 0 0 2rpx ' + theme.colors.sameDigitRing + ';' : item.isFixed ? 'background-color: ' + theme.colors.fixed + ';' : 'background-color: ' + theme.colors.boardBg + ';'}}{{item.hasError ? ' background-color: ' + theme.colors.errorBg + ' !important;' : ''}}{{item.showHint ? ' background: linear-gradient(135deg, ' + theme.colors.hint + ', ' + theme.colors.success + ') !important;' : ''}}"
           data-index="{{item.index}}"
           bindtap="onCellTap">
           <!-- 正常数字 (暂停时隐藏) -->
-          <text class="cell-text" wx:if="{{item.value && !item.showHint && !isPaused}}" style="color: {{item.index === selectedIndex ? theme.colors.selectedText : item.isFixed ? theme.colors.textDark : theme.colors.textDark}};">{{item.value}}</text>
+          <text class="cell-text" wx:if="{{item.value && !item.showHint && !isPaused}}" style="color: {{item.index === selectedIndex ? theme.colors.selectedText : item.isRelated ? theme.colors.relatedText : item.isSameNumber ? theme.colors.sameDigitHighlightText : item.isFixed ? theme.colors.textDark : theme.colors.textDark}};">{{item.value}}</text>
           
           <!-- 提示数字（带动画，暂停时隐藏） -->
           <text class="hint-text" wx:if="{{item.showHint && !isPaused}}">{{item.hintValue}}</text>
@@ -75,8 +75,9 @@
       </view>
     </view>
     
-    <!-- 底部工具栏 - 跟随棋盘 -->
-    <view class="bottom-toolbar">
+    <!-- 底部工具栏 - 跟随棋盘（按键区白底 / 宠物区页面主题底，便于区分） -->
+    <view class="bottom-toolbar {{numberPadLayout === 'double' ? 'number-pad-double' : ''}}">
+    <view class="bottom-toolbar-keys" style="background: {{theme.colors.cardBg}}; border-top: 2rpx solid {{theme.colors.border}}; border-bottom: 2rpx solid {{theme.colors.border}}; box-shadow: 0 2rpx 12rpx {{theme.colors.shadow}};">
     <!-- 功能按钮行 -->
     <view class="toolbar-actions">
       <button class="tool-btn" bindtap="onUndo" disabled="{{!canUndo}}">
@@ -105,15 +106,112 @@
       </button>
     </view>
     
-    <!-- 数字1-9横向排列 -->
-    <view class="number-grid">
-      <block wx:for="{{[1,2,3,4,5,6,7,8,9]}}" wx:key="*this">
-        <view class="number-btn {{isNoteMode ? 'note-mode' : ''}}" style="border-color: {{theme.colors.border}}; {{isNoteMode ? 'background: ' + theme.colors.primaryLight + ';' : ''}}" data-num="{{item}}" bindtap="onNumberTap">
-          <text class="number-main" style="color: {{isNoteMode ? theme.colors.textWhite : theme.colors.textDark}};">{{item}}</text>
-          <text class="number-count" style="color: {{isNoteMode ? 'rgba(255, 255, 255, 0.8)' : theme.colors.textLight}};">{{numberCounts[item - 1]}}</text>
+    <!-- 数字菜单：支持单行/双行排列 -->
+    <view class="number-grid {{numberPadLayout === 'double' ? 'two-rows' : 'one-row'}}">
+      <block wx:for="{{numberPadRows}}" wx:key="index">
+        <view class="number-row">
+          <block wx:for="{{item}}" wx:key="*this">
+            <view class="number-btn {{isNoteMode ? 'note-mode' : ''}}" style="border-color: {{theme.colors.border}}; {{isNoteMode ? 'background: ' + theme.colors.primaryLight + ';' : ''}}" data-num="{{item}}" bindtap="onNumberTap">
+              <text class="number-main" style="color: {{isNoteMode ? theme.colors.textWhite : theme.colors.textDark}};">{{item}}</text>
+              <text class="number-count" style="color: {{isNoteMode ? 'rgba(255, 255, 255, 0.8)' : theme.colors.textLight}};">{{numberCounts[item - 1]}}</text>
+            </view>
+          </block>
         </view>
       </block>
     </view>
+    </view>
+
+    <!-- 宠物：单宠可换位置；双宠左右固定 + 点一只另一只 peerTap -->
+    <view wx:if="{{showGamePet && theme}}" class="pet-dock-strip" style="background: {{theme.colors.background}}; border-top: 2rpx solid {{theme.colors.border}};">
+    <view class="pet-dock">
+      <block wx:if="{{activePetIds.length === 1}}">
+        <view class="pet-dock-inner pet-dock-inner--{{petDockLayout}}">
+          <view class="pet-dock-stage">
+            <view
+              class="pet-img-wrap {{petGameShake ? 'pet-img-wrap--shake' : ''}}"
+              bindtap="onPetGameTap"
+            >
+              <image
+                wx:if="{{!gamePetImageFailed}}"
+                class="pet-img"
+                src="{{gamePetImageSrc}}"
+                mode="aspectFit"
+                binderror="onPetGameImageError"
+              />
+              <text wx:else class="pet-img-fallback">🐱</text>
+            </view>
+            <view class="pet-bubble-wrap" wx:if="{{petBubbleText}}">
+              <view class="pet-bubble pet-bubble--gamefx {{petBubbleFadeIn ? 'is-visible' : ''}}" style="border-color: {{theme.colors.border}}; background: {{theme.colors.cardBg}};">
+                <text class="pet-bubble-text" style="color: {{theme.colors.textDark}};">{{petBubbleText}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </block>
+      <view wx:elif="{{activePetIds.length === 2}}" class="pet-dock-dual-row">
+        <view class="pet-dock-half">
+          <view class="pet-dock-inner pet-dock-inner--left">
+            <view class="pet-dock-stage">
+              <view class="pet-img-wrap {{petDual0Shake ? 'pet-img-wrap--shake' : ''}}" bindtap="onPetDualTap" data-slot="0">
+                <image wx:if="{{!petDual0Failed}}" class="pet-img" src="{{petDual0Image}}" mode="aspectFit" binderror="onPetDual0ImageError" />
+                <text wx:else class="pet-img-fallback">🐱</text>
+              </view>
+              <view class="pet-bubble-wrap" wx:if="{{petBubbleText}}">
+                <view class="pet-bubble pet-bubble--gamefx {{petBubbleFadeIn ? 'is-visible' : ''}}" style="border-color: {{theme.colors.border}}; background: {{theme.colors.cardBg}};">
+                  <text class="pet-bubble-text" style="color: {{theme.colors.textDark}};">{{petBubbleText}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+        <view class="pet-dock-half">
+          <view class="pet-dock-inner pet-dock-inner--right">
+            <view class="pet-dock-stage">
+              <view class="pet-img-wrap {{petDual1Shake ? 'pet-img-wrap--shake' : ''}}" bindtap="onPetDualTap" data-slot="1">
+                <image wx:if="{{!petDual1Failed}}" class="pet-img" src="{{petDual1Image}}" mode="aspectFit" binderror="onPetDual1ImageError" />
+                <text wx:else class="pet-img-fallback">🐱</text>
+              </view>
+              <view class="pet-bubble-wrap" wx:if="{{petBubble1Text}}">
+                <view class="pet-bubble pet-bubble--gamefx {{petBubble1FadeIn ? 'is-visible' : ''}}" style="border-color: {{theme.colors.border}}; background: {{theme.colors.cardBg}};">
+                  <text class="pet-bubble-text" style="color: {{theme.colors.textDark}};">{{petBubble1Text}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    </view>
+    </view>
+  </view>
+
+  <!-- 通关庆贺（有宠物时：图 + 文） -->
+  <view
+    class="win-pet-mask"
+    wx:if="{{showWinPetOverlay && theme}}"
+    catchtouchmove="onWinPetMaskMove"
+  >
+    <view class="win-pet-card" style="background: {{theme.colors.cardBg}}; box-shadow: 0 12rpx 40rpx {{theme.colors.shadowStrong}};">
+      <view class="win-pet-hero-row">
+        <view class="win-pet-hero">
+          <image wx:if="{{winPetImageSrc && !winPetImageFailed}}" class="win-pet-img win-pet-img--dual" src="{{winPetImageSrc}}" mode="aspectFit" binderror="onWinPetImageError" />
+          <text wx:else class="win-pet-fallback win-pet-fallback--dual">🐱</text>
+        </view>
+        <view class="win-pet-hero" wx:if="{{winPetImageSrc1}}">
+          <image wx:if="{{winPetImageSrc1 && !winPetImageFailed1}}" class="win-pet-img win-pet-img--dual" src="{{winPetImageSrc1}}" mode="aspectFit" binderror="onWinPetImage1Error" />
+          <text wx:else class="win-pet-fallback win-pet-fallback--dual">🐱</text>
+        </view>
+      </view>
+      <text class="win-pet-name" style="color: {{theme.colors.primary}};">{{winPetPetName}}</text>
+      <text class="win-pet-body" style="color: {{theme.colors.textDark}};">{{winPetBody}}</text>
+      <view class="win-pet-actions">
+        <view class="win-pet-btn win-pet-btn--primary" style="background: linear-gradient(135deg, {{theme.colors.primary}}, {{theme.colors.primaryDark}});" bindtap="onWinPetOverlayConfirm">
+          <text style="color: {{theme.colors.textWhite}};">再来一局</text>
+        </view>
+        <view class="win-pet-btn win-pet-btn--ghost" style="border-color: {{theme.colors.border}};" bindtap="onWinPetOverlayCancel">
+          <text style="color: {{theme.colors.textMedium}};">查看统计</text>
+        </view>
+      </view>
     </view>
   </view>
 </view>

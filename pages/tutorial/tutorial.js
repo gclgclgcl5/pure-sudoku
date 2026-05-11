@@ -80,6 +80,7 @@ Page({
   applyTheme() {
     const theme = themeModule.getCurrentTheme();
     this.setData({ theme: theme });
+    themeModule.applySystemTheme(theme);
     
     wx.setNavigationBarColor({
       frontColor: '#ffffff',

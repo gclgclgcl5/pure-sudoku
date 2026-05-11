@@ -1,0 +1,142 @@
+<view class="page-root" style="min-height: 100vh; box-sizing: border-box; background: linear-gradient(180deg, {{theme.colors.background}} 0%, {{theme.colors.background}} 100%);">
+  <view class="progress-slot" wx:if="{{activeTab === 'basic'}}">
+    <text class="progress-title" style="color: {{theme.colors.textDark}};">初级收录</text>
+    <text class="progress-num" style="color: {{theme.colors.primary}};">{{basicProgress.unlocked}}</text>
+    <text class="progress-slash" style="color: {{theme.colors.textMedium}};"> / </text>
+    <text class="progress-total" style="color: {{theme.colors.textMedium}};">{{basicProgress.total}}</text>
+  </view>
+  <view class="progress-slot" wx:elif="{{activeTab === 'advanced'}}">
+    <text class="progress-title" style="color: {{theme.colors.textDark}};">高级收录</text>
+    <text class="progress-num" style="color: {{theme.colors.primary}};">{{advancedProgress.unlocked}}</text>
+    <text class="progress-slash" style="color: {{theme.colors.textMedium}};"> / </text>
+    <text class="progress-total" style="color: {{theme.colors.textMedium}};">{{advancedProgress.total}}</text>
+  </view>
+  <view class="progress-slot progress-slot--pet" wx:elif="{{activeTab === 'pet'}}">
+    <text class="progress-pet-hint" style="color: {{theme.colors.textLight}};">图鉴收录在初级 / 高级中查看</text>
+  </view>
+
+  <view class="tab-bar" style="background: {{theme.colors.cardBg}}; box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}};">
+    <view class="tab-item {{activeTab === 'basic' ? 'active' : ''}}" data-tab="basic" bindtap="onTabTap" style="{{activeTab === 'basic' ? 'background: linear-gradient(135deg, ' + theme.colors.primary + ', ' + theme.colors.primaryDark + '); box-shadow: 0 2rpx 8rpx ' + theme.colors.shadowStrong + ';' : ''}}">
+      <text class="tab-text" style="color: {{activeTab === 'basic' ? theme.colors.textWhite : theme.colors.textMedium}};">初级图鉴</text>
+    </view>
+    <view class="tab-item {{activeTab === 'advanced' ? 'active' : ''}}" data-tab="advanced" bindtap="onTabTap" style="{{activeTab === 'advanced' ? 'background: linear-gradient(135deg, ' + theme.colors.primary + ', ' + theme.colors.primaryDark + '); box-shadow: 0 2rpx 8rpx ' + theme.colors.shadowStrong + ';' : ''}}">
+      <text class="tab-text" style="color: {{activeTab === 'advanced' ? theme.colors.textWhite : theme.colors.textMedium}};">高级图鉴</text>
+    </view>
+    <view class="tab-item {{activeTab === 'pet' ? 'active' : ''}}" data-tab="pet" bindtap="onTabTap" style="{{activeTab === 'pet' ? 'background: linear-gradient(135deg, ' + theme.colors.primary + ', ' + theme.colors.primaryDark + '); box-shadow: 0 2rpx 8rpx ' + theme.colors.shadowStrong + ';' : ''}}">
+      <text class="tab-text" style="color: {{activeTab === 'pet' ? theme.colors.textWhite : theme.colors.textMedium}};">宠物</text>
+    </view>
+  </view>
+
+  <block wx:if="{{activeTab === 'basic' || activeTab === 'advanced'}}">
+    <view class="main-area">
+      <view class="hint" style="color: {{theme.colors.textMedium}};">左右滑动翻页 · 已收录可点进详情</view>
+
+      <swiper
+        wx:key="activeTab"
+        class="collection-swiper"
+        indicator-dots="{{false}}"
+        circular="{{swiperPages.length > 1}}"
+        current="{{currentPage}}"
+        bindchange="onGridSwiperChange"
+      >
+        <block wx:for="{{swiperPages}}" wx:key="pageId" wx:for-item="page">
+          <swiper-item>
+            <view class="slide-inner">
+              <view class="grid">
+                <block wx:for="{{page.cells}}" wx:key="_slot" wx:for-item="cell" wx:for-index="cellIndex">
+                  <view
+                    wx:if="{{!cell._empty && cell.unlocked}}"
+                    class="cell"
+                    style="background: {{theme.colors.cardBg}}; box-shadow: 0 4rpx 16rpx {{theme.colors.shadow}}; border: 1rpx solid {{theme.colors.border}};"
+                    data-id="{{cell.id}}"
+                    data-scope="{{gridScope}}"
+                    bindtap="onCellTap"
+                  >
+                    <text class="cell-emoji">{{cell.emoji}}</text>
+                    <text class="cell-name" style="color: {{theme.colors.textDark}};">{{cell.name}}</text>
+                  </view>
+                  <view
+                    wx:elif="{{!cell._empty && !cell.unlocked}}"
+                    class="cell cell--locked"
+                    style="background: {{theme.colors.fixed}}; border: 1rpx solid {{theme.colors.border}};"
+                    catchtap="onLockedCellTap"
+                  >
+                    <text class="cell-emoji cell-emoji--lock">🔒</text>
+                    <text class="cell-name cell-name--locked" style="color: {{theme.colors.textLight}};">未收录</text>
+                  </view>
+                  <view
+                    wx:else
+                    class="cell cell--empty"
+                    style="border: 1rpx dashed {{theme.colors.border}};"
+                  />
+                </block>
+              </view>
+            </view>
+          </swiper-item>
+        </block>
+      </swiper>
+    </view>
+
+    <view class="dots-row" wx:if="{{showPageDots}}">
+      <block wx:for="{{swiperPages}}" wx:key="pageId" wx:for-index="dotIndex">
+        <view
+          class="dot"
+          style="background: {{dotIndex === currentPage ? theme.colors.primary : theme.colors.border}}; opacity: {{dotIndex === currentPage ? 1 : 0.5}};"
+        />
+      </block>
+    </view>
+  </block>
+
+  <view wx:if="{{activeTab === 'pet'}}" class="pet-tab-root">
+    <swiper
+      class="pet-gallery-swiper"
+      circular="{{petGalleryList.length > 1}}"
+      current="{{petSwiperCurrent}}"
+      bindchange="onPetGallerySwiperChange"
+    >
+      <block wx:for="{{petGalleryList}}" wx:key="id">
+        <swiper-item>
+          <view class="pet-slide">
+            <view class="pet-slide-visual">
+              <view class="pet-dock-inner pet-dock-inner--{{petDockLayout}}">
+                <view class="pet-dock-stage">
+                  <view
+                    class="pet-img-wrap {{petGalleryShakeId === item.id ? 'pet-img-wrap--shake' : ''}}"
+                    bindtap="onPetGalleryPetTap"
+                    data-id="{{item.id}}"
+                  >
+                    <image
+                      wx:if="{{!petImgFail[item.id]}}"
+                      class="pet-img"
+                      src="{{item.image}}"
+                      mode="aspectFit"
+                      data-id="{{item.id}}"
+                      binderror="onPetGalleryImgError"
+                    />
+                    <text wx:else class="pet-img-fallback">🐱</text>
+                  </view>
+                  <view class="pet-bubble-wrap" wx:if="{{petGalleryBubbleVisible}}">
+                    <view class="pet-bubble" style="border-color: {{theme.colors.border}}; background: {{theme.colors.cardBg}};">
+                      <text class="pet-bubble-text" style="color: {{theme.colors.textDark}};">{{petGalleryBubbleText}}</text>
+                    </view>
+                  </view>
+                </view>
+              </view>
+              <text class="pet-gal-desc" style="color: {{theme.colors.textMedium}};">{{item.galleryDesc}}</text>
+            </view>
+
+            <view
+              class="pet-go-btn"
+              style="background: linear-gradient(135deg, {{theme.colors.primary}}, {{theme.colors.primaryDark}}); box-shadow: 0 6rpx 20rpx {{theme.colors.shadowStrong}};"
+              data-id="{{item.id}}"
+              bindtap="onPetGoPlay"
+            >
+              <text style="color: {{theme.colors.textWhite}};">{{item.goPlayLabel}}</text>
+            </view>
+          </view>
+        </swiper-item>
+      </block>
+    </swiper>
+    <view class="pet-active-hint" style="color: {{theme.colors.textLight}};">{{activeSquadHint}}</view>
+  </view>
+</view>

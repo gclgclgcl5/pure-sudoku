@@ -7,9 +7,9 @@ Page({
       {
         id: 1,
         title: '欢迎来到纯粹数独训练！',
-        date: '2026-04-30',
+        date: '2026-05-08',
         type: 'welcome',
-        content: '感谢您使用纯粹数独训练！这是一款专注于数独游戏本身的小程序，就像数独本身一样纯粹。（就像周雨晴小朋友一样，哈哈哈）'
+        content: '感谢您使用纯粹数独训练！这是一款专注于数独游戏本身的小程序，就像数独本身一样纯粹。这次大更新除了优化体验，还添加了图鉴系统！快快通关解锁海量图鉴吧！'
       }
     ],
     
@@ -116,6 +116,7 @@ Page({
   applyTheme() {
     const theme = themeModule.getCurrentTheme();
     this.setData({ theme: theme });
+    themeModule.applySystemTheme(theme);
     
     // 设置导航栏颜色
     wx.setNavigationBarColor({
@@ -127,13 +128,7 @@ Page({
       }
     });
     
-    // 设置TabBar颜色
-    wx.setTabBarStyle({
-      color: theme.colors.textLight,
-      selectedColor: theme.colors.primary,
-      backgroundColor: '#FFFFFF',
-      borderStyle: 'white'
-    });
+    // TabBar 与系统根层背景色由 themeModule.applySystemTheme 统一处理
   },
 
   // 切换教程展开/收起

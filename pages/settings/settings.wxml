@@ -1,79 +1,108 @@
 <!-- 设置页面 -->
 <view class="container" style="background: linear-gradient(180deg, {{theme.colors.background}} 0%, {{theme.colors.background}} 100%);">
-  <!-- 主题选择 -->
-  <view class="section">
-    <view class="section-title">
-      <text class="title-icon">🎨</text>
-      <text class="title-text">主题配色</text>
+  <!-- Tab 菜单 -->
+  <view class="tab-bar" style="background: {{theme.colors.cardBg}}; box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}};">
+    <view class="tab-item {{activeTab === 'theme' ? 'active' : ''}}" data-tab="theme" bindtap="onTabTap" style="{{activeTab === 'theme' ? 'background: linear-gradient(135deg, ' + theme.colors.primary + ', ' + theme.colors.primaryDark + '); box-shadow: 0 2rpx 8rpx ' + theme.colors.shadowStrong + ';' : ''}}">
+      <text class="tab-text" style="color: {{activeTab === 'theme' ? theme.colors.textWhite : theme.colors.textMedium}};">主题设置</text>
     </view>
-    <view class="section-desc">选择您喜欢的配色方案</view>
-    
-    <view class="theme-grid">
-      <block wx:for="{{themes}}" wx:key="id">
-        <view class="theme-card {{currentThemeId === item.id ? 'active' : ''}}" 
-              data-theme-id="{{item.id}}"
-              bindtap="onThemeTap">
-          <!-- 选中标记 -->
-          <view class="theme-check" wx:if="{{currentThemeId === item.id}}">✓</view>
-          
-          <!-- 主题预览 -->
-          <view class="theme-preview">
-            <!-- 迷你九宫格预览 -->
-            <view class="preview-grid">
-              <view class="preview-cell" style="background-color: {{item.colors.selected}}"></view>
-              <view class="preview-cell" style="background-color: {{item.colors.related}}"></view>
-              <view class="preview-cell" style="background-color: {{item.colors.fixed}}"></view>
-              <view class="preview-cell" style="background-color: {{item.colors.related}}"></view>
-              <view class="preview-cell" style="background-color: {{item.colors.sameNumber}}"></view>
-              <view class="preview-cell" style="background-color: {{item.colors.related}}"></view>
-              <view class="preview-cell" style="background-color: {{item.colors.fixed}}"></view>
-              <view class="preview-cell" style="background-color: {{item.colors.related}}"></view>
-              <view class="preview-cell" style="background-color: {{item.colors.boardBg}}"></view>
+    <view class="tab-item {{activeTab === 'game' ? 'active' : ''}}" data-tab="game" bindtap="onTabTap" style="{{activeTab === 'game' ? 'background: linear-gradient(135deg, ' + theme.colors.primary + ', ' + theme.colors.primaryDark + '); box-shadow: 0 2rpx 8rpx ' + theme.colors.shadowStrong + ';' : ''}}">
+      <text class="tab-text" style="color: {{activeTab === 'game' ? theme.colors.textWhite : theme.colors.textMedium}};">游戏设置</text>
+    </view>
+  </view>
+
+  <block wx:if="{{activeTab === 'theme'}}">
+    <!-- 主题选择 -->
+    <view class="section">
+      <view class="section-title">
+        <text class="title-icon">🎨</text>
+        <text class="title-text" style="color: {{theme.colors.textDark}};">主题配色</text>
+      </view>
+      <view class="section-desc" style="color: {{theme.colors.textMedium}};">选择您喜欢的配色方案</view>
+      
+      <view class="theme-grid">
+        <block wx:for="{{themes}}" wx:key="id">
+          <view class="theme-card {{currentThemeId === item.id ? 'active' : ''}}" style="box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}}; {{currentThemeId === item.id ? 'border-color: ' + theme.colors.primary + '; box-shadow: 0 4rpx 16rpx ' + theme.colors.shadowStrong + ';' : ''}}"
+                data-theme-id="{{item.id}}"
+                bindtap="onThemeTap">
+            <!-- 选中标记 -->
+            <view class="theme-check" wx:if="{{currentThemeId === item.id}}" style="background: linear-gradient(135deg, {{theme.colors.primary}}, {{theme.colors.primaryDark}});">✓</view>
+            
+            <!-- 主题预览 -->
+            <view class="theme-preview">
+              <!-- 迷你九宫格预览 -->
+              <view class="preview-grid">
+                <view class="preview-cell" style="background-color: {{item.colors.selected}}"></view>
+                <view class="preview-cell" style="background-color: {{item.colors.related}}"></view>
+                <view class="preview-cell" style="background-color: {{item.colors.fixed}}"></view>
+                <view class="preview-cell" style="background-color: {{item.colors.related}}"></view>
+                <view class="preview-cell" style="background-color: {{item.colors.sameDigitHighlight}}"></view>
+                <view class="preview-cell" style="background-color: {{item.colors.related}}"></view>
+                <view class="preview-cell" style="background-color: {{item.colors.fixed}}"></view>
+                <view class="preview-cell" style="background-color: {{item.colors.related}}"></view>
+                <view class="preview-cell" style="background-color: {{item.colors.boardBg}}"></view>
+              </view>
+              
+              <!-- 主题色带 -->
+              <view class="color-strip">
+                <view class="color-block" style="background-color: {{item.colors.primary}}"></view>
+                <view class="color-block" style="background-color: {{item.colors.primaryLight}}"></view>
+                <view class="color-block" style="background-color: {{item.colors.primaryDark}}"></view>
+              </view>
             </view>
             
-            <!-- 主题色带 -->
-            <view class="color-strip">
-              <view class="color-block" style="background-color: {{item.colors.primary}}"></view>
-              <view class="color-block" style="background-color: {{item.colors.primaryLight}}"></view>
-              <view class="color-block" style="background-color: {{item.colors.primaryDark}}"></view>
+            <!-- 主题信息 -->
+            <view class="theme-info">
+              <text class="theme-icon">{{item.icon}}</text>
+              <text class="theme-name" style="color: {{theme.colors.textDark}};">{{item.name}}</text>
+              <text class="theme-desc" style="color: {{theme.colors.textLight}};">{{item.description}}</text>
             </view>
           </view>
-          
-          <!-- 主题信息 -->
-          <view class="theme-info">
-            <text class="theme-icon">{{item.icon}}</text>
-            <text class="theme-name">{{item.name}}</text>
-            <text class="theme-desc">{{item.description}}</text>
+        </block>
+      </view>
+    </view>
+  </block>
+
+  <block wx:if="{{activeTab === 'game'}}">
+    <!-- 数字菜单排列 -->
+    <view class="section">
+      <view class="section-title">
+        <text class="title-icon">🔢</text>
+        <text class="title-text" style="color: {{theme.colors.textDark}};">数字菜单排列</text>
+      </view>
+      <view class="section-desc" style="color: {{theme.colors.textMedium}};">选择数字按钮布局，双行更容易点击</view>
+
+      <view class="layout-list">
+        <block wx:for="{{numberLayoutOptions}}" wx:key="id">
+          <view class="layout-card {{numberPadLayout === item.id ? 'active' : ''}}" style="box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}}; {{numberPadLayout === item.id ? 'border-color: ' + theme.colors.primary + '; box-shadow: 0 4rpx 14rpx ' + theme.colors.shadowStrong + ';' : ''}}" data-layout="{{item.id}}" bindtap="onNumberLayoutTap">
+            <view class="layout-info">
+              <text class="layout-title" style="color: {{theme.colors.textDark}};">{{item.title}}</text>
+              <text class="layout-desc" style="color: {{theme.colors.textMedium}};">{{item.desc}}</text>
+            </view>
+            <view class="layout-check" wx:if="{{numberPadLayout === item.id}}" style="background: linear-gradient(135deg, {{theme.colors.primary}}, {{theme.colors.primaryDark}});">✓</view>
           </view>
-        </view>
-      </block>
+        </block>
+      </view>
     </view>
-  </view>
 
-  <!-- 其他功能 -->
-  <view class="section">
-    <view class="section-title">
-      <text class="title-icon">🛠️</text>
-      <text class="title-text" style="color: {{theme.colors.textDark}};">其他</text>
-    </view>
-    
-    <view class="action-list">
-      <button class="action-btn" style="box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}};" bindtap="onClearCacheTap">
-        <text class="action-icon">🗑️</text>
-        <text class="action-text" style="color: {{theme.colors.textDark}};">清除缓存</text>
-      </button>
+    <!-- 其他功能 -->
+    <view class="section">
+      <view class="section-title">
+        <text class="title-icon">🛠️</text>
+        <text class="title-text" style="color: {{theme.colors.textDark}};">其他</text>
+      </view>
       
-      <button class="action-btn" style="box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}};" bindtap="onAboutTap">
-        <text class="action-icon">ℹ️</text>
-        <text class="action-text" style="color: {{theme.colors.textDark}};">关于应用</text>
-      </button>
+      <view class="action-list">
+        <button class="action-btn" style="box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}};" bindtap="onClearCacheTap">
+          <text class="action-icon">🗑️</text>
+          <text class="action-text" style="color: {{theme.colors.textDark}};">清除缓存</text>
+        </button>
+        
+        <button class="action-btn" style="box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}};" bindtap="onAboutTap">
+          <text class="action-icon">ℹ️</text>
+          <text class="action-text" style="color: {{theme.colors.textDark}};">关于应用</text>
+        </button>
+      </view>
     </view>
-  </view>
-
-  <!-- 版本信息 -->
-  <view class="footer">
-    <text class="version" style="color: {{theme.colors.textLight}};">版本 {{version}}</text>
-    <text class="copyright" style="color: {{theme.colors.textLight}};">© 2025 纯粹数独训练</text>
-  </view>
+  </block>
 </view>
 
