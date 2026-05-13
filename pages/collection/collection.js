@@ -234,6 +234,10 @@ Page({
   },
 
   onPetGoPlay(e) {
+    if (this._suppressNextPetGoTap) {
+      this._suppressNextPetGoTap = false;
+      return;
+    }
     const id = e.currentTarget.dataset.id;
     if (!id || !petConfig.isPlayablePetId(id)) return;
     const prev = petStorage.getActivePetIds();
@@ -276,6 +280,28 @@ Page({
       title: pet && pet.name ? `已携带：${pet.name}` : '已携带',
       icon: 'none',
       duration: 1400
+    });
+  },
+
+  /** 长按「走，我们去玩！」或「取消携带」：一键清空全部出战携带 */
+  onPetGoPlayLongPress() {
+    const ids = petStorage.getActivePetIds();
+    if (!ids.length) {
+      wx.showToast({
+        title: '当前没有携带宠物',
+        icon: 'none',
+        duration: 1400
+      });
+      return;
+    }
+    petStorage.clearActiveSquad();
+    petDockLayout.setPetDockLayout('center');
+    this._patchPetTabFromStorage();
+    this._suppressNextPetGoTap = true;
+    wx.showToast({
+      title: '已清空全部出战',
+      icon: 'none',
+      duration: 1600
     });
   }
 });

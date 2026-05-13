@@ -78,11 +78,17 @@ function getLeftPetId() {
   return ids[0] || null;
 }
 
+/** 清空全部出战携带（左、右位均移除） */
+function clearActiveSquad() {
+  return setActivePetIds([]);
+}
+
 module.exports = {
   ACTIVE_PETS_KEY,
   LEGACY_ACTIVE_PET_KEY,
   getActivePetIds,
   setActivePetIds,
   togglePetInSquad,
-  getLeftPetId
+  getLeftPetId,
+  clearActiveSquad
 };

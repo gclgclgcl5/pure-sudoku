@@ -12,7 +12,7 @@
     <text class="progress-total" style="color: {{theme.colors.textMedium}};">{{advancedProgress.total}}</text>
   </view>
   <view class="progress-slot progress-slot--pet" wx:elif="{{activeTab === 'pet'}}">
-    <text class="progress-pet-hint" style="color: {{theme.colors.textLight}};">图鉴收录在初级 / 高级中查看</text>
+    <text class="progress-pet-hint" style="color: {{theme.colors.textLight}};">长按「走，我们去玩！」或「取消携带」可清空全部出战</text>
   </view>
 
   <view class="tab-bar" style="background: {{theme.colors.cardBg}}; box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}};">
@@ -130,6 +130,7 @@
               style="background: linear-gradient(135deg, {{theme.colors.primary}}, {{theme.colors.primaryDark}}); box-shadow: 0 6rpx 20rpx {{theme.colors.shadowStrong}};"
               data-id="{{item.id}}"
               bindtap="onPetGoPlay"
+              bindlongpress="onPetGoPlayLongPress"
             >
               <text style="color: {{theme.colors.textWhite}};">{{item.goPlayLabel}}</text>
             </view>
@@ -137,6 +138,14 @@
         </swiper-item>
       </block>
     </swiper>
+    <view class="dots-row dots-row--pet" wx:if="{{petGalleryList.length > 1}}">
+      <block wx:for="{{petGalleryList}}" wx:key="id" wx:for-index="dotIndex">
+        <view
+          class="dot"
+          style="background: {{dotIndex === petSwiperCurrent ? theme.colors.primary : theme.colors.border}}; opacity: {{dotIndex === petSwiperCurrent ? 1 : 0.5}};"
+        />
+      </block>
+    </view>
     <view class="pet-active-hint" style="color: {{theme.colors.textLight}};">{{activeSquadHint}}</view>
   </view>
 </view>

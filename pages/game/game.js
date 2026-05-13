@@ -68,7 +68,9 @@ Page({
     winPetImageFailed1: false,
     winPetTitle: '',
     winPetBody: '',
-    winPetPetName: ''
+    winPetPetName: '',
+
+    debugInstantWin: false
   },
 
   onLoad(options) {
@@ -120,6 +122,10 @@ Page({
 
   onHint() {
     this._game.onHint();
+  },
+
+  onDebugInstantWin() {
+    if (this._game) this._game.onDebugInstantWin();
   },
 
   onPause() {

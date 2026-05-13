@@ -35,7 +35,7 @@
       <view class="demo-board">
         <block wx:for="{{demoBoard}}" wx:key="index">
           <view class="demo-cell {{item.isHighlight ? 'highlight' : ''}} {{item.isRightBorder ? 'border-right' : ''}} {{item.isBottomBorder ? 'border-bottom' : ''}}"
-                style="{{item.isHighlight ? 'background-color: ' + theme.colors.selected + ';' : 'background-color: ' + theme.colors.boardBg + ';'}}">
+                style="{{item.isHighlight ? 'background: ' + theme.colors.selected + ';' : 'background-color: ' + theme.colors.boardBg + ';'}}">
             <view class="demo-number" wx:if="{{item.value}}" style="color: {{item.isHighlight ? theme.colors.selectedText : theme.colors.textLight}};">
               {{item.value}}
             </view>

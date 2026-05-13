@@ -7,9 +7,9 @@ Page({
       {
         id: 1,
         title: '欢迎来到纯粹数独训练！',
-        date: '2026-05-08',
+        date: '2026-05-13',
         type: 'welcome',
-        content: '感谢您使用纯粹数独训练！这是一款专注于数独游戏本身的小程序，就像数独本身一样纯粹。这次大更新除了优化体验，还添加了图鉴系统！快快通关解锁海量图鉴吧！'
+        content: '这次更新添加了更多的主题配色，让这个小程序越发接近一件艺术品了，哈哈哈哈哈。此外还添加了右上角分享功能，喜欢的话请多分析给更多的人玩上吧~！'
       }
     ],
     
@@ -111,6 +111,26 @@ Page({
 
   onShow() {
     this.applyTheme();
+    wx.showShareMenu({
+      menus: ['shareAppMessage', 'shareTimeline'],
+      fail() {}
+    });
+  },
+
+  /** 分享给好友 */
+  onShareAppMessage() {
+    return {
+      title: '纯粹数独训练 — 公告与教程',
+      path: '/pages/announcement/announcement?from=share'
+    };
+  },
+
+  /** 分享到朋友圈（微信 8.0.24+；单页模式见官方文档） */
+  onShareTimeline() {
+    return {
+      title: '纯粹数独训练 — 更新说明与玩法教程',
+      query: 'from=timeline'
+    };
   },
 
   applyTheme() {

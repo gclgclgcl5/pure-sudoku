@@ -1,5 +1,5 @@
 <!-- 公告页面 -->
-<view class="container" style="background: linear-gradient(180deg, {{theme.colors.background}} 0%, {{theme.colors.background}} 100%);">
+<view class="container" style="background: linear-gradient(180deg, {{theme.colors.background}} 0%, {{theme.colors.background}} 100%); --theme-border: {{theme.colors.border}};">
   <!-- 公告区域 -->
   <view class="section">
     <view class="section-title">
@@ -30,7 +30,7 @@
     <view class="tutorials">
       <block wx:for="{{tutorials}}" wx:key="id" wx:for-index="index">
         <view class="tutorial-card {{activeIndex === index ? 'active' : ''}}" 
-              style="box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}}; {{activeIndex === index ? 'border-left: 4rpx solid ' + theme.colors.primary + ';' : ''}}"
+              style="background: {{theme.colors.surfaceElevated}}; box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}}; {{activeIndex === index ? 'border-left: 4rpx solid ' + theme.colors.primary + ';' : ''}}"
               data-index="{{index}}" 
               bindtap="onTutorialTap">
           <view class="tutorial-header">

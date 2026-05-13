@@ -1,5 +1,5 @@
 <!-- 游戏页面 - 阶段6版本 -->
-<view class="container" style="background: linear-gradient(180deg, {{theme.colors.background}} 0%, {{theme.colors.background}} 100%);">
+<view class="container" style="background: linear-gradient(180deg, {{theme.colors.background}} 0%, {{theme.colors.background}} 100%); --surface-elevated: {{theme.colors.surfaceElevated}}; --surface-border: {{theme.colors.border}}; --theme-primary: {{theme.colors.primary}}; --theme-primary-light: {{theme.colors.primaryLight}}; --theme-primary-dark: {{theme.colors.primaryDark}};">
   <view class="content">
     <!-- 顶部信息栏 - 3个元素，各占1/3 -->
     <view class="info-bar" style="background: linear-gradient(135deg, {{theme.colors.primary}}, {{theme.colors.primaryDark}});">
@@ -29,11 +29,11 @@
     </view>
     
     <!-- 数独棋盘 -->
-    <view class="board {{isPaused ? 'paused' : ''}}" style="background-color: {{theme.colors.boardFrame}};">
+    <view class="board {{isPaused ? 'paused' : ''}}" style="background-color: {{theme.colors.boardFrame}}; --board-palace-line: {{theme.colors.boardPalaceLine}};">
       <block wx:for="{{cells}}" wx:key="index">
         <view 
           class="cell {{item.isFixed ? 'fixed' : ''}} {{item.index === selectedIndex ? 'selected' : ''}} {{item.isRelated ? 'related' : ''}} {{item.isSameNumber ? 'same-number' : ''}} {{item.hasError ? 'error' : ''}} {{item.showHint ? 'hint-active' : ''}} {{item.isRightBorder ? 'border-right' : ''}} {{item.isBottomBorder ? 'border-bottom' : ''}}"
-          style="{{item.index === selectedIndex ? 'background-color: ' + theme.colors.selected + ' !important;' : item.isRelated ? 'background-color: ' + theme.colors.related + ';' : item.isSameNumber ? 'background-color: ' + theme.colors.sameDigitHighlight + '; box-shadow: inset 0 0 0 2rpx ' + theme.colors.sameDigitRing + ';' : item.isFixed ? 'background-color: ' + theme.colors.fixed + ';' : 'background-color: ' + theme.colors.boardBg + ';'}}{{item.hasError ? ' background-color: ' + theme.colors.errorBg + ' !important;' : ''}}{{item.showHint ? ' background: linear-gradient(135deg, ' + theme.colors.hint + ', ' + theme.colors.success + ') !important;' : ''}}"
+          style="{{item.index === selectedIndex ? 'background: ' + theme.colors.selected + ' !important;' : item.isRelated ? 'background-color: ' + theme.colors.related + ';' : item.isSameNumber ? 'background-color: ' + theme.colors.sameDigitHighlight + '; box-shadow: inset 0 0 0 2rpx ' + theme.colors.sameDigitRing + ';' : item.isFixed ? 'background-color: ' + theme.colors.fixed + ';' : 'background-color: ' + theme.colors.boardBg + ';'}}{{item.hasError ? ' background-color: ' + theme.colors.errorBg + ' !important;' : ''}}{{item.showHint ? ' background: linear-gradient(135deg, ' + theme.colors.hint + ', ' + theme.colors.success + ') !important;' : ''}}"
           data-index="{{item.index}}"
           bindtap="onCellTap">
           <!-- 正常数字 (暂停时隐藏) -->
@@ -58,11 +58,11 @@
       </block>
       
       <!-- 暂停遮罩 -->
-      <view class="pause-overlay" wx:if="{{isPaused}}">
+      <view class="pause-overlay" wx:if="{{isPaused}}" style="background-color: {{theme.colors.surfaceElevated}};">
         <view class="pause-content">
-          <text class="pause-icon">⏸</text>
-          <text class="pause-text">游戏已暂停</text>
-          <text class="pause-hint">点击"继续"按钮恢复游戏</text>
+          <text class="pause-icon" style="color: {{theme.colors.primary}};">⏸</text>
+          <text class="pause-text" style="color: {{theme.colors.textDark}};">游戏已暂停</text>
+          <text class="pause-hint" style="color: {{theme.colors.textMedium}};">点击"继续"按钮恢复游戏</text>
           
           <!-- 暂停时的操作按钮 -->
           <view class="pause-actions">
@@ -95,9 +95,14 @@
         <text class="tool-label" style="{{isNoteMode ? 'color: ' + theme.colors.textWhite + ';' : 'color: ' + theme.colors.textDark + ';'}}">{{isNoteMode ? '填数' : '笔记'}}</text>
       </button>
       
-      <button class="tool-btn" bindtap="onHint">
+      <button wx:if="{{!debugInstantWin}}" class="tool-btn" bindtap="onHint">
         <text class="tool-icon" style="color: {{theme.colors.textDark}};">💡</text>
         <text class="tool-label" style="color: {{theme.colors.textDark}};">提示</text>
+      </button>
+
+      <button wx:if="{{debugInstantWin}}" class="tool-btn" bindtap="onDebugInstantWin">
+        <text class="tool-icon" style="color: {{theme.colors.textDark}};">🏆</text>
+        <text class="tool-label" style="color: {{theme.colors.textDark}};">胜利</text>
       </button>
       
       <button class="tool-btn {{isPaused ? 'active' : ''}}" style="{{isPaused ? 'background: ' + theme.colors.primaryLight + '; color: ' + theme.colors.textWhite + ';' : ''}}" bindtap="onPause">

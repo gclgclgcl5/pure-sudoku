@@ -1,5 +1,5 @@
 <!-- 设置页面 -->
-<view class="container" style="background: linear-gradient(180deg, {{theme.colors.background}} 0%, {{theme.colors.background}} 100%);">
+<view class="container" style="background: linear-gradient(180deg, {{theme.colors.background}} 0%, {{theme.colors.background}} 100%); --surface-elevated: {{theme.colors.surfaceElevated}}; --surface-border: {{theme.colors.border}};">
   <!-- Tab 菜单 -->
   <view class="tab-bar" style="background: {{theme.colors.cardBg}}; box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}};">
     <view class="tab-item {{activeTab === 'theme' ? 'active' : ''}}" data-tab="theme" bindtap="onTabTap" style="{{activeTab === 'theme' ? 'background: linear-gradient(135deg, ' + theme.colors.primary + ', ' + theme.colors.primaryDark + '); box-shadow: 0 2rpx 8rpx ' + theme.colors.shadowStrong + ';' : ''}}">
@@ -31,7 +31,7 @@
             <view class="theme-preview">
               <!-- 迷你九宫格预览 -->
               <view class="preview-grid">
-                <view class="preview-cell" style="background-color: {{item.colors.selected}}"></view>
+                <view class="preview-cell" style="background: {{item.colors.selected}}"></view>
                 <view class="preview-cell" style="background-color: {{item.colors.related}}"></view>
                 <view class="preview-cell" style="background-color: {{item.colors.fixed}}"></view>
                 <view class="preview-cell" style="background-color: {{item.colors.related}}"></view>
@@ -100,6 +100,11 @@
         <button class="action-btn" style="box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}};" bindtap="onAboutTap">
           <text class="action-icon">ℹ️</text>
           <text class="action-text" style="color: {{theme.colors.textDark}};">关于应用</text>
+        </button>
+
+        <button wx:if="{{debugInstantWin}}" class="action-btn" style="box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}};" bindtap="onDebugInstantWinOffTap">
+          <text class="action-icon">🧪</text>
+          <text class="action-text" style="color: {{theme.colors.textDark}};">关闭「胜利」调试</text>
         </button>
       </view>
     </view>

@@ -52,6 +52,26 @@ Page({
 
   onShow() {
     this.applyTheme();
+    wx.showShareMenu({
+      menus: ['shareAppMessage', 'shareTimeline'],
+      fail() {}
+    });
+  },
+
+  /** 分享给好友（右上角菜单 / open-type="share"） */
+  onShareAppMessage() {
+    return {
+      title: '纯粹数独训练 — 经典数独，随时开一局',
+      path: '/pages/home/home?from=share'
+    };
+  },
+
+  /** 分享到朋友圈（需微信 8.0.24+；打开后为单页模式，见官方文档） */
+  onShareTimeline() {
+    return {
+      title: '纯粹数独训练 — 放松大脑，来玩数独吧',
+      query: 'from=timeline'
+    };
   },
 
   applyTheme() {

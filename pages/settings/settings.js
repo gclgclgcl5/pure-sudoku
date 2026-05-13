@@ -1,5 +1,6 @@
 // 设置页面
 const themeModule = require('../../utils/theme.js');
+const debugFlags = require('../../utils/debugFlags.js');
 const NUMBER_PAD_LAYOUT_KEY = 'numberPadLayout';
 
 Page({
@@ -22,7 +23,8 @@ Page({
       }
     ],
     
-    version: 'v2.1.0'
+    version: 'v2.1.0',
+    debugInstantWin: false
   },
 
   onLoad() {
@@ -76,8 +78,22 @@ Page({
   loadGameSettings() {
     const numberPadLayout = wx.getStorageSync(NUMBER_PAD_LAYOUT_KEY) || 'single';
     this.setData({
-      numberPadLayout: numberPadLayout
+      numberPadLayout: numberPadLayout,
+      debugInstantWin: debugFlags.isDebugInstantWinEnabled()
     });
+  },
+
+  /** 关闭「胜利」调试（恢复「提示」按钮） */
+  onDebugInstantWinOffTap() {
+    debugFlags.setDebugInstantWinEnabled(false);
+    this.setData({ debugInstantWin: false });
+    const pages = getCurrentPages();
+    pages.forEach(p => {
+      if (p.route === 'pages/game/game') {
+        p.setData({ debugInstantWin: false });
+      }
+    });
+    wx.showToast({ title: '已关闭', icon: 'none' });
   },
 
   // 切换数字菜单排列
@@ -158,13 +174,51 @@ Page({
     }
   },
 
-  // 关于应用
+  // 关于应用（双按钮：朕知道了 / 友谊密码）
   onAboutTap() {
+    const content = `版本：${this.data.version}\n\n我的天这都被你发现了\n恭喜周雨晴小朋友再次发现了属于你的彩蛋。\n\n下个版本还会继续藏哦！`;
     wx.showModal({
       title: '关于纯粹数独训练',
-      content: `版本：${this.data.version}\n\n我的天这都被你发现了\n恭喜周雨晴小朋友再次发现了属于你的彩蛋。\n\n下个版本还会继续藏哦！`,
-      showCancel: false,
-      confirmText: '朕知道了'
+      content,
+      showCancel: true,
+      cancelText: '友谊密码',
+      confirmText: '朕知道了',
+      success: res => {
+        if (res.confirm) return;
+        if (!res.cancel) return;
+        wx.showModal({
+          title: '友谊密码',
+          content: '你猜？哈哈哈哈哈！',
+          editable: true,
+          placeholderText: '请输入友谊密码',
+          confirmText: '确定',
+          cancelText: '取消',
+          success: r2 => {
+            if (!r2.confirm) return;
+            const pwd = String(r2.content || '').trim();
+            if (pwd === '0411') {
+              const wasOn = debugFlags.isDebugInstantWinEnabled();
+              if (wasOn) {
+                debugFlags.setDebugInstantWinEnabled(false);
+                this.setData({ debugInstantWin: false });
+                wx.showToast({ title: '已恢复普通模式', icon: 'success' });
+              } else {
+                debugFlags.setDebugInstantWinEnabled(true);
+                this.setData({ debugInstantWin: true });
+                wx.showToast({ title: '已开启调试', icon: 'success' });
+              }
+              const pages = getCurrentPages();
+              pages.forEach(p => {
+                if (p.route === 'pages/game/game') {
+                  p.setData({ debugInstantWin: !wasOn });
+                }
+              });
+            } else {
+              wx.showToast({ title: '密码不正确', icon: 'none' });
+            }
+          }
+        });
+      }
     });
   },
 

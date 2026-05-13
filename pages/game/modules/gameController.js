@@ -5,6 +5,7 @@ const collectionUnlock = require('../../../utils/collectionUnlock.js');
 const petStorage = require('../../../utils/petStorage.js');
 const petConfig = require('../../../utils/petConfig.js');
 const petDockLayout = require('../../../utils/petDockLayout.js');
+const debugFlags = require('../../../utils/debugFlags.js');
 const GAME_PROGRESS_KEY = 'gameProgress';
 const NUMBER_PAD_LAYOUT_KEY = 'numberPadLayout';
 
@@ -198,6 +199,10 @@ function createGameController(page) {
     page.setData(patch);
   }
 
+  function syncDebugInstantWinFromStorage() {
+    page.setData({ debugInstantWin: debugFlags.isDebugInstantWinEnabled() });
+  }
+
   const api = {
     onLoad(options) {
       console.log('\n========================================');
@@ -218,6 +223,8 @@ function createGameController(page) {
       
       // 加载数字菜单布局
       api.loadNumberPadLayout();
+
+      syncDebugInstantWinFromStorage();
       
       // 优先尝试恢复存档
       api.tryRestoreGame();
@@ -266,6 +273,7 @@ function createGameController(page) {
       // 页面显示时重新应用主题，并在可恢复场景继续计时
       api.applyTheme();
       api.loadNumberPadLayout();
+      syncDebugInstantWinFromStorage();
       syncPetDockUI();
       if (!page.data.isPaused && page.data.cells.length > 0 && !api.checkWinCondition()) {
         api.startTimer();
@@ -930,6 +938,48 @@ function createGameController(page) {
         duration: 1500
       });
     },
+
+    /** 友谊密码调试：用完整解答填满棋盘并触发正常通关 */
+    onDebugInstantWin() {
+      const cells = page.data.cells;
+      const sol = page.shudu && page.shudu.solution;
+      if (!cells || cells.length !== 81 || !sol || sol.length !== 9) {
+        wx.showToast({ title: '棋盘未就绪', icon: 'none' });
+        return;
+      }
+      for (let r = 0; r < 9; r++) {
+        if (!sol[r] || sol[r].length !== 9) {
+          wx.showToast({ title: '无解数据', icon: 'none' });
+          return;
+        }
+      }
+      for (let i = 0; i < 81; i++) {
+        const cell = cells[i];
+        const v = sol[cell.row][cell.col];
+        page.shudu.board[cell.row][cell.col] = v;
+        cell.value = v;
+        cell.hasError = false;
+        cell.showHint = false;
+        cell.hintValue = '';
+        cell.notes = [];
+        cell.noteFlags = null;
+        cell.isRelated = false;
+        cell.isSameNumber = false;
+      }
+      page.setData({
+        cells,
+        isPaused: false,
+        showNumberPad: false,
+        selectedIndex: -1
+      });
+      api.updateNumberCounts();
+      if (api.checkWinCondition()) {
+        console.log('🐛 调试胜利');
+        api.showWinMessage();
+      } else {
+        wx.showToast({ title: '校验未通过', icon: 'none' });
+      }
+    },
     
     // 暂停/继续功能
     onPause() {
@@ -1183,7 +1233,7 @@ function createGameController(page) {
           cancelText: '查看统计',
           success: (res) => {
             if (res.confirm) {
-              api.startNewGame();
+              api.showNewGameDifficultyPicker();
             } else if (res.cancel) {
               wx.navigateTo({
                 url: '/pages/statistics/statistics'
@@ -1216,8 +1266,9 @@ function createGameController(page) {
     },
 
     onWinPetOverlayConfirm() {
-      page.setData({ showWinPetOverlay: false });
-      api.startNewGame();
+      page.setData({ showWinPetOverlay: false }, () => {
+        api.showNewGameDifficultyPicker();
+      });
     },
 
     onWinPetOverlayCancel() {
@@ -1265,29 +1316,27 @@ function createGameController(page) {
       petStaggerTimeouts.push(tid);
     },
     
-    // 新游戏 - 先选择难度
-    onNewGame() {
-      console.log('🔄 点击新游戏');
-      
-      // 弹出难度选择
+    /** 与暂停「新游戏」一致：先选难度再开局（通关「再来一局」也走此流程） */
+    showNewGameDifficultyPicker() {
       const difficultyLabels = page.data.difficulties.map(d => d.label);
-      
       wx.showActionSheet({
         itemList: difficultyLabels,
         success: (res) => {
           const selectedIndex = res.tapIndex;
           console.log('选择难度:', difficultyLabels[selectedIndex]);
-          
-          // 切换难度
           api.changeDifficulty(selectedIndex);
-          
-          // 开始新游戏
           api.startNewGame();
         },
-        fail: (res) => {
+        fail: () => {
           console.log('取消选择难度');
         }
       });
+    },
+
+    // 新游戏 - 先选择难度
+    onNewGame() {
+      console.log('🔄 点击新游戏');
+      api.showNewGameDifficultyPicker();
     },
     
     onReady() {

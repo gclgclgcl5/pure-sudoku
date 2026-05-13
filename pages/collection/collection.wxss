@@ -23,7 +23,10 @@
 }
 
 .progress-slot--pet {
-  min-height: 56rpx;
+  min-height: 72rpx;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
 }
 
 .progress-title {
@@ -45,6 +48,10 @@
 .progress-pet-hint {
   font-size: 24rpx;
   text-align: center;
+  line-height: 1.45;
+  width: 100%;
+  padding: 0 8rpx;
+  box-sizing: border-box;
 }
 
 .cell--locked {
@@ -251,4 +258,14 @@
   width: 12rpx;
   height: 12rpx;
   border-radius: 50%;
+}
+
+/* 宠物较多时与初级/高级一致，并允许换行避免挤爆窄屏 */
+.dots-row--pet {
+  flex-wrap: wrap;
+  row-gap: 12rpx;
+  max-width: 100%;
+  padding-left: 8rpx;
+  padding-right: 8rpx;
+  box-sizing: border-box;
 }

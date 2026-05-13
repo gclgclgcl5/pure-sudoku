@@ -64,7 +64,6 @@
 .menu-item {
   display: flex;
   align-items: center;
-  background: #FFFFFF;
   border-radius: 16rpx;
   padding: 30rpx 24rpx;
   box-shadow: 0 4rpx 12rpx rgba(94, 170, 168, 0.15);
@@ -107,7 +106,6 @@
 
 .menu-arrow {
   font-size: 48rpx;
-  color: #D4E8E7;
   font-weight: 300;
 }
 

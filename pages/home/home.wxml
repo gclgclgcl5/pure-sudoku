@@ -10,13 +10,13 @@
   <!-- 菜单列表 -->
   <view class="menu-list">
     <block wx:for="{{menuItems}}" wx:key="id">
-      <view class="menu-item" style="box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}};" data-item="{{item}}" bindtap="onMenuTap">
+      <view class="menu-item" style="background: {{theme.colors.surfaceElevated}}; box-shadow: 0 2rpx 8rpx {{theme.colors.shadow}};" data-item="{{item}}" bindtap="onMenuTap">
         <view class="menu-icon">{{item.icon}}</view>
         <view class="menu-content">
           <text class="menu-title" style="color: {{theme.colors.textDark}};">{{item.title}}</text>
           <text class="menu-desc" style="color: {{theme.colors.textMedium}};">{{item.desc}}</text>
         </view>
-        <view class="menu-arrow">›</view>
+        <view class="menu-arrow" style="color: {{theme.colors.border}};">›</view>
       </view>
     </block>
   </view>
